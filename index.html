@@ -451,8 +451,14 @@ function renderDashboard({travels,leads,prs,pos}) {
 function renderVisits() {
   const q=(document.getElementById('visit-search')||{}).value||'';
   const gq=(document.getElementById('global-search')||{}).value||'';
+  const gls=(document.getElementById('filter-lead-status')||{}).value||'';
   const vc=['#4a8fd4','#e0a030','#3db87a','#8b6fd4','#e05c3a','#545868'];
-  const filtered=_data.aVisits.filter(r=>matches(r,q)&&matches(r,gq));
+  const filtered=_data.aVisits.filter(r=>{
+    if(!matches(r,q))return false;
+    if(!matches(r,gq))return false;
+    if(gls&&String(r['Lead Status']||'').trim()!==gls)return false;
+    return true;
+  });
   set('visits-list',filtered.slice(0,6).map((r,i)=>{
     const c=vc[i%vc.length];
     return `<div class="visit-item">
@@ -477,7 +483,12 @@ function renderPRs() {
   let rows=_data.aPRs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    if(activeFilter){const quot=r['Quotation Status']||(r['Remark 3']?'Quotation sent':'In progress');if(!String(quot).toLowerCase().includes(activeFilter))return false;}
+    if(activeFilter){
+      const quot=String(r['Quotation Status']||r['Remark 3']||'').toLowerCase();
+      const status=String(r['Status']||'').toLowerCase();
+      const combined=quot+' '+status;
+      if(!combined.includes(activeFilter))return false;
+    }
     return true;
   });
   const {col,dir}=_sort.pr;
@@ -519,7 +530,7 @@ function renderPOs() {
 }
 
 function applyAllFilters() {
-  renderVisits(); renderPRs(); renderPOs();
+  renderVisits(); renderPRs(); renderPOs(); renderPipeline();
   const active=[
     document.getElementById('global-search').value,
     document.getElementById('filter-lead-status').value,
@@ -528,6 +539,24 @@ function applyAllFilters() {
   ].filter(Boolean).length;
   const el=document.getElementById('filter-summary');
   if(el) el.textContent=active?`${active} filter${active>1?'s':''} active`:'';
+}
+
+function renderPipeline() {
+  const gq=(document.getElementById('global-search')||{}).value||'';
+  const gls=(document.getElementById('filter-lead-status')||{}).value||'';
+  let leads=_data.aLeads.filter(r=>{
+    if(!matches(r,gq))return false;
+    if(gls&&String(r['Lead Status']||'').trim()!==gls)return false;
+    return true;
+  });
+  const sc={};
+  leads.forEach(r=>{const s=String(r['Lead Status']||'Unknown').trim();sc[s]=(sc[s]||0)+1;});
+  const maxV=Math.max(...Object.values(sc),1);
+  set('pipeline-bars',Object.entries(sc).map(([s,n])=>{
+    const c=si(s);const pct=Math.round(n/maxV*100);
+    return `<div class="pipe-row"><span class="pipe-label">${s}</span><div class="pipe-track"><div class="pipe-fill" style="width:${pct}%;background:${c.bar}"></div></div><span class="pipe-n">${n}</span></div>`;
+  }).join('')||'<div class="empty">No leads match filters</div>');
+  set('kpi-leads',leads.length);
 }
 
 function clearAllFilters() {
