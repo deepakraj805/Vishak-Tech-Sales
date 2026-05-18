@@ -247,12 +247,12 @@
     </select>
     <select class="filter-select" id="filter-po-stage" onchange="applyAllFilters()">
       <option value="">All PO Stages</option>
-      <option value="processing">Processing</option>
-      <option value="completed">Completed</option>
-      <option value="25% completed">25% Completed</option>
-      <option value="50% completed">50% Completed</option>
-      <option value="75% over">75% Over</option>
-      <option value="yts">Yet to Start (YTS)</option>
+      <option value="PROCESSING">Processing</option>
+      <option value="COMPLETED">Completed</option>
+      <option value="25% COMPLETED">25% Completed</option>
+      <option value="50% COMPLETED">50% Completed</option>
+      <option value="75% OVER">75% Over</option>
+      <option value="YTS">Yet to Start (YTS)</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -316,12 +316,12 @@
       <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
       <select class="card-search-select" id="po-stage-filter" onchange="renderPOs()">
         <option value="">All stages</option>
-        <option value="processing">Processing</option>
-        <option value="completed">Completed</option>
-        <option value="25% completed">25% Completed</option>
-        <option value="50% completed">50% Completed</option>
-        <option value="75% over">75% Over</option>
-        <option value="yts">Yet to Start (YTS)</option>
+        <option value="PROCESSING">Processing</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="25% COMPLETED">25% Completed</option>
+        <option value="50% COMPLETED">50% Completed</option>
+        <option value="75% OVER">75% Over</option>
+        <option value="YTS">Yet to Start (YTS)</option>
       </select>
     </div>
     <table class="data-table">
@@ -412,7 +412,7 @@ function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r
 function renderDashboard({travels,leads,prs,pos}) {
   _data.aLeads  = leads.filter(r=>r['Lead No']);
   _data.aPRs    = prs.filter(r=>r['Internal PR No']);
-  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&r['PO Number']&&r['PO Number'].startsWith('VST'));
+  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&String(r['Customer Name']).length>2&&String(r['Production Stage']).length>0&&!String(r['Customer Name']).toLowerCase().includes('grand total')&&!String(r['Customer Name']).toLowerCase().includes('production stage'));
   _data.aVisits = travels.filter(r=>r['Lead No']);
 
   const anyEmpty=[_data.aLeads,_data.aPRs,_data.aPOs,_data.aVisits].some(a=>a.length===0);
@@ -510,13 +510,13 @@ function renderPOs() {
   const gq=(document.getElementById('global-search')||{}).value||'';
   const psf=(document.getElementById('po-stage-filter')||{}).value||'';
   const gps=(document.getElementById('filter-po-stage')||{}).value||'';
-  const activeFilter=psf||gps;
+  const activeFilter=(psf||gps).trim();
 
   let rows=_data.aPOs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
     if(activeFilter){
-      const stage=String(r['Production Stage']||'').toLowerCase().trim();
+      const stage=String(r['Production Stage']||'').trim();
       if(stage!==activeFilter) return false;
     }
     return true;
