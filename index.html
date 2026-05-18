@@ -247,7 +247,7 @@
       <option value="completed">Completed</option>
       <option value="25% completed">25% Completed</option>
       <option value="50% completed">50% Completed</option>
-      <option value="75%completed">75% Completed</option>
+      <option value="75% completed">75% Completed</option>
       <option value="yts">YTS</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
@@ -316,7 +316,7 @@
         <option value="completed">Completed</option>
         <option value="25% completed">25% Completed</option>
         <option value="50% completed">50% Completed</option>
-        <option value="75%completed">75% Completed</option>
+        <option value="75% completed">75% Completed</option>
         <option value="yts">YTS</option>
       </select>
     </div>
@@ -512,7 +512,7 @@ function renderPOs() {
   let rows=_data.aPOs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    if(activeFilter&&!String(r['Production Stage']||'').toLowerCase().includes(activeFilter))return false;
+    if(activeFilter&&String(r['Production Stage']||'').toLowerCase().trim()!==activeFilter)return false;
     return true;
   });
   const {col,dir}=_sort.po;
