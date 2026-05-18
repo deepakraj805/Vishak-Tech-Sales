@@ -110,11 +110,12 @@
   .card-search-select option { background:var(--surface2); }
 
   /* PIPE BARS */
-  .pipe-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
-  .pipe-label { font-size:13px; color:var(--text); width:110px; flex-shrink:0; font-weight:600; }
-  .pipe-track { flex:1; height:6px; background:var(--surface3); border-radius:3px; overflow:hidden; }
-  .pipe-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
-  .pipe-n { font-size:12px; font-weight:700; width:18px; text-align:right; font-family:'DM Mono',monospace; color:#ffffff; }
+  .pipe-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .pipe-label { font-size:13px; color:var(--text); width:120px; flex-shrink:0; font-weight:600; }
+  .pipe-track { flex:1; height:8px; background:var(--surface3); border-radius:4px; overflow:hidden; }
+  .pipe-fill { height:100%; border-radius:4px; transition:width 0.7s cubic-bezier(.4,0,.2,1); }
+  .pipe-n { font-size:12px; font-weight:700; width:22px; text-align:right; font-family:'DM Mono',monospace; color:#ffffff; }
+  .pipe-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
 
   /* VISITS */
   .visit-item { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--border); }
@@ -139,19 +140,22 @@
 
   /* PILLS */
   .pill { display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:5px; letter-spacing:0.2px; }
-  .pill-new{background:var(--blue-bg);color:var(--blue)}
-  .pill-follow{background:var(--amber-bg);color:var(--amber)}
-  .pill-qual{background:var(--green-bg);color:var(--green)}
-  .pill-prop{background:var(--purple-bg);color:var(--purple)}
-  .pill-won{background:var(--green-bg);color:var(--green)}
-  .pill-rel{background:var(--green-bg);color:var(--green)}
-  .pill-wait{background:var(--amber-bg);color:var(--amber)}
-  .pill-sent{background:var(--blue-bg);color:var(--blue)}
-  .pill-notsent{background:rgba(224,92,58,0.15);color:var(--accent)}
-  .pill-process{background:var(--amber-bg);color:var(--amber)}
-  .pill-complete{background:var(--green-bg);color:var(--green)}
-  .pill-partial{background:var(--purple-bg);color:var(--purple)}
-  .pill-yts{background:rgba(139,111,212,0.2);color:#a88fe8}
+  .pill-new{background:rgba(74,143,212,0.18);color:#60a5fa}
+  .pill-follow{background:rgba(245,158,11,0.18);color:#fbbf24}
+  .pill-qual{background:rgba(16,185,129,0.18);color:#34d399}
+  .pill-prop{background:rgba(167,139,250,0.18);color:#c4b5fd}
+  .pill-won{background:rgba(6,214,160,0.18);color:#06d6a0}
+  .pill-rel{background:rgba(16,185,129,0.18);color:#34d399}
+  .pill-wait{background:rgba(245,158,11,0.18);color:#fbbf24}
+  .pill-sent{background:rgba(74,143,212,0.18);color:#60a5fa}
+  .pill-notsent{background:rgba(239,68,68,0.18);color:#f87171}
+  .pill-process{background:rgba(251,146,60,0.18);color:#fb923c}
+  .pill-complete{background:rgba(16,185,129,0.18);color:#34d399}
+  .pill-25{background:rgba(56,189,248,0.18);color:#38bdf8}
+  .pill-50{background:rgba(167,139,250,0.18);color:#c4b5fd}
+  .pill-75{background:rgba(249,115,22,0.18);color:#fb923c}
+  .pill-partial{background:rgba(167,139,250,0.18);color:#c4b5fd}
+  .pill-yts{background:rgba(129,140,248,0.2);color:#a5b4fc}
   .pill-default{background:var(--surface3);color:var(--text2)}
 
   .chart-wrap { position:relative; width:100%; height:165px; margin-top:1rem; }
@@ -247,7 +251,7 @@
       <option value="completed">Completed</option>
       <option value="25% completed">25% Completed</option>
       <option value="50% completed">50% Completed</option>
-      <option value="75% completed">75% Completed</option>
+      <option value="75% over">75% Over</option>
       <option value="yts">YTS</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
@@ -316,7 +320,7 @@
         <option value="completed">Completed</option>
         <option value="25% completed">25% Completed</option>
         <option value="50% completed">50% Completed</option>
-        <option value="75% completed">75% Completed</option>
+        <option value="75% over">75% Over</option>
         <option value="yts">YTS</option>
       </select>
     </div>
@@ -395,16 +399,12 @@ async function loadAll() {
 }
 
 // ── COLOUR HELPERS ──
-const STATUS_COLORS = {
-  'new':           {fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},
-  'follow up':     {fill:'#e0a030',bar:'#e0a030',pill:'pill-follow'},
-  'qualified':     {fill:'#3db87a',bar:'#3db87a',pill:'pill-qual'},
-  'proposal sent': {fill:'#8b6fd4',bar:'#8b6fd4',pill:'pill-prop'},
-  'closed won':    {fill:'#3db87a',bar:'#3db87a',pill:'pill-won'},
-};
-function si(s){return STATUS_COLORS[String(s||'').toLowerCase().trim()]||{fill:'#545868',bar:'#545868',pill:'pill-default'};}
+const STATUS_COLORS = {'new':{fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},'follow up':{fill:'#f59e0b',bar:'#f59e0b',pill:'pill-follow'},'qualified':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'proposal sent':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'closed won':{fill:'#06d6a0',bar:'#06d6a0',pill:'pill-won'},'closed lost':{fill:'#ef4444',bar:'#ef4444',pill:'pill-notsent'},'negotiation':{fill:'#f97316',bar:'#f97316',pill:'pill-follow'},'contacted':{fill:'#38bdf8',bar:'#38bdf8',pill:'pill-new'},'pr received':{fill:'#34d399',bar:'#34d399',pill:'pill-qual'},'pr processed':{fill:'#60a5fa',bar:'#60a5fa',pill:'pill-new'},'accepted':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'rejected':{fill:'#f43f5e',bar:'#f43f5e',pill:'pill-notsent'}};
+const _dynColors=['#4a8fd4','#f59e0b','#10b981','#a78bfa','#f97316','#38bdf8','#e879f9','#06d6a0','#fb923c','#34d399','#818cf8','#f43f5e'];
+const _dynMap={};let _dynIdx=0;
+function si(s){const k=String(s||'').toLowerCase().trim();if(STATUS_COLORS[k])return STATUS_COLORS[k];if(!_dynMap[k]){_dynMap[k]=_dynColors[_dynIdx%_dynColors.length];_dynIdx++;}const c=_dynMap[k];return{fill:c,bar:c,pill:'pill-default'};}
 function pillPR(s){const v=String(s||'').toLowerCase().trim();if(v==='submitted')return'pill-sent';if(v==='not submitted')return'pill-notsent';return'pill-default';}
-function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-partial';if(v.includes('50%'))return'pill-partial';if(v.includes('75%'))return'pill-partial';if(v==='yts')return'pill-yts';return'pill-default';}
+function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yts')return'pill-yts';return'pill-default';}
 function fmtDate(v){if(!v)return'—';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
@@ -434,7 +434,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   const maxV=Math.max(...Object.values(sc),1);
   set('pipeline-bars',Object.entries(sc).map(([s,n])=>{
     const c=si(s);const pct=Math.round(n/maxV*100);
-    return `<div class="pipe-row"><span class="pipe-label">${s}</span><div class="pipe-track"><div class="pipe-fill" style="width:${pct}%;background:${c.bar}"></div></div><span class="pipe-n">${n}</span></div>`;
+    return `<div class="pipe-row"><div class="pipe-dot" style="background:${c.bar}"></div><span class="pipe-label" style="color:${c.bar}">${s}</span><div class="pipe-track"><div class="pipe-fill" style="width:${pct}%;background:linear-gradient(90deg,${c.bar}cc,${c.bar})"></div></div><span class="pipe-n" style="color:${c.bar}">${n}</span></div>`;
   }).join('')||'<div class="empty">No lead data</div>');
 
   if(chartInstance){chartInstance.destroy();chartInstance=null;}
@@ -442,7 +442,7 @@ function renderDashboard({travels,leads,prs,pos}) {
     chartInstance=new Chart(document.getElementById('pipeChart'),{
       type:'doughnut',
       data:{labels:Object.keys(sc),datasets:[{data:Object.values(sc),backgroundColor:Object.keys(sc).map(l=>si(l).fill),borderWidth:2,borderColor:'#181c26'}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}
+      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#c0c5d8',font:{size:11,family:'DM Sans'},padding:8,boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}
     });
   }
 
@@ -512,7 +512,7 @@ function renderPOs() {
   let rows=_data.aPOs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
-    if(activeFilter&&String(r['Production Stage']||'').toLowerCase().trim()!==activeFilter)return false;
+    if(activeFilter){const stage=String(r['Production Stage']||'').toLowerCase().trim();const exact=(stage===activeFilter);const partial=activeFilter.includes('%')&&stage.includes(activeFilter.replace(' completed','').replace(' over','').trim());if(!exact&&!partial)return false;}
     return true;
   });
   const {col,dir}=_sort.po;
