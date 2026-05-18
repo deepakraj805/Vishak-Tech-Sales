@@ -252,7 +252,7 @@
       <option value="25% completed">25% Completed</option>
       <option value="50% completed">50% Completed</option>
       <option value="75% over">75% Over</option>
-      <option value="yts">YTS</option>
+      <option value="yts">Yet to Start (YTS)</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -321,7 +321,7 @@
         <option value="25% completed">25% Completed</option>
         <option value="50% completed">50% Completed</option>
         <option value="75% over">75% Over</option>
-        <option value="yts">YTS</option>
+        <option value="yts">Yet to Start (YTS)</option>
       </select>
     </div>
     <table class="data-table">
@@ -412,7 +412,7 @@ function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r
 function renderDashboard({travels,leads,prs,pos}) {
   _data.aLeads  = leads.filter(r=>r['Lead No']);
   _data.aPRs    = prs.filter(r=>r['Internal PR No']);
-  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']);
+  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&r['PO Number']&&r['PO Number'].startsWith('VST'));
   _data.aVisits = travels.filter(r=>r['Lead No']);
 
   const anyEmpty=[_data.aLeads,_data.aPRs,_data.aPOs,_data.aVisits].some(a=>a.length===0);
@@ -526,7 +526,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']||'—'}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']||'—'}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
