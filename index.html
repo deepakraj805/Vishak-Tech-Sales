@@ -432,7 +432,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   const sc={};
   _data.aLeads.forEach(r=>{const s=String(r['Lead Status']||'Unknown').trim();sc[s]=(sc[s]||0)+1;});
   const maxV=Math.max(...Object.values(sc),1);
-  const PIPE_PALETTE=['#60a5fa','#f59e0b','#34d399','#c4b5fd','#f97316','#06d6a0','#e879f9','#f43f5e','#38bdf8','#a3e635','#fb923c','#818cf8'];
+  const PIPE_PALETTE=['#eab308','#60a5fa','#34d399','#ef4444','#f97316','#06d6a0','#e879f9','#f43f5e','#38bdf8','#a3e635','#fb923c','#818cf8'];
   const scEntries=Object.entries(sc);
   set('pipeline-bars',scEntries.map(([s,n],i)=>{
     const col=PIPE_PALETTE[i%PIPE_PALETTE.length];
