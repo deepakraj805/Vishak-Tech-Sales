@@ -721,19 +721,10 @@ function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed'
 function fmtDate(v){
   if(!v)return'—';
   let s=String(v).trim();
-  // Google Sheets CSV exports Excel dates as M/D/YYYY (e.g. "6/4/2026" = June 4)
-  // Detect this: if first segment <= 12 AND second segment could be a day, treat as M/D/YYYY
+  // Excel DD/MM/YYYY exported via Google Sheets — always treat as day/month/year
   const slash=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
-  if(slash){
-    const a=parseInt(slash[1],10), b=parseInt(slash[2],10), yr=slash[3];
-    // If first part <=12 and second part >12, must be M/D/YYYY
-    // If first part >12, must be D/M/YYYY
-    // If both <=12, ambiguous — Google Sheets always exports as M/D/YYYY so treat as month/day
-    const month = a<=12 ? a : b;
-    const day   = a<=12 ? b : a;
-    s = yr+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-  }
-  // Handle DD-MM-YYYY (explicit dash, treat as D-M-YYYY from manual entry)
+  if(slash) s=slash[3]+'-'+slash[2].padStart(2,'0')+'-'+slash[1].padStart(2,'0');
+  // DD-MM-YYYY
   const dash=/^(\d{1,2})\-(\d{1,2})\-(\d{4})$/.exec(s);
   if(dash) s=dash[3]+'-'+dash[2].padStart(2,'0')+'-'+dash[1].padStart(2,'0');
   const d=new Date(s);
