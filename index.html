@@ -293,6 +293,145 @@
 
   @media(max-width:700px){ .kpi-grid{grid-template-columns:1fr 1fr} .row2{grid-template-columns:1fr} }
   @media(max-width:420px){ .kpi-grid{grid-template-columns:1fr} }
+
+  /* ── SALES PIPELINE TRACKER ── */
+  .sp-search-row { display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .sp-search-input {
+    flex:1; min-width:180px; background:var(--surface2); border:1px solid var(--border-strong);
+    color:var(--text); border-radius:9px; padding:0.45rem 0.75rem 0.45rem 2.1rem;
+    font-size:12.5px; font-family:inherit; outline:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:9px center;
+    transition:border-color .18s, box-shadow .18s;
+  }
+  .sp-search-input:focus { border-color:var(--border-accent); box-shadow:0 0 0 3px rgba(224,112,64,.10); }
+  .sp-search-input::placeholder { color:var(--text3); }
+  .sp-search-select {
+    background:var(--surface2); border:1px solid var(--border-strong); color:var(--text2);
+    border-radius:9px; padding:0.45rem 0.7rem; font-size:12px; font-family:inherit;
+    outline:none; cursor:pointer; transition:border-color .18s;
+  }
+  .sp-search-select:focus { border-color:var(--border-accent); color:var(--text); }
+  .sp-search-select option { background:var(--surface2); }
+
+  /* summary kpis */
+  .sp-kpis { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .sp-kpi {
+    background:var(--surface2); border:1px solid var(--border-strong);
+    border-radius:10px; padding:0.5rem 1rem; display:flex; flex-direction:column; min-width:100px;
+  }
+  .sp-kpi-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--text3); }
+  .sp-kpi-val   { font-size:24px; font-weight:800; font-family:'DM Mono',monospace; line-height:1.2; }
+  .sp-kpi.spk1 .sp-kpi-val { color:var(--text); }
+  .sp-kpi.spk2 .sp-kpi-val { color:var(--blue); }
+  .sp-kpi.spk3 .sp-kpi-val { color:var(--amber); }
+  .sp-kpi.spk4 .sp-kpi-val { color:var(--green); }
+
+  /* deal card */
+  .sp-card {
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:1.1rem 1.25rem 1rem;
+    margin-bottom:10px; transition:border-color .2s, box-shadow .2s;
+  }
+  .sp-card:hover { border-color:var(--border-accent); box-shadow:0 4px 22px rgba(0,0,0,.35); }
+  .sp-card-top {
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap:10px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .sp-card-left { display:flex; flex-direction:column; gap:3px; }
+  .sp-lead-id   { font-size:13px; font-weight:800; color:var(--accent); font-family:'DM Mono',monospace; }
+  .sp-customer  { font-size:13px; font-weight:700; color:var(--text); }
+  .sp-meta      { font-size:11px; color:var(--text3); font-weight:600; display:flex; gap:8px; flex-wrap:wrap; }
+  .sp-meta-item { display:flex; align-items:center; gap:4px; }
+  .sp-meta-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .sp-progress-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
+  .sp-progress-label { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+  .sp-progress-pct   { font-size:18px; font-weight:800; font-family:'DM Mono',monospace; }
+
+  /* 4-phase stepper */
+  .sp-stepper {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:0; position:relative;
+  }
+  .sp-phase {
+    display:flex; flex-direction:column; align-items:center;
+    position:relative;
+  }
+  /* horizontal connector line between phases */
+  .sp-phase-track {
+    display:flex; align-items:center; width:100%; position:relative; height:28px;
+  }
+  .sp-phase-line-l, .sp-phase-line-r {
+    flex:1; height:2px; background:var(--surface4); transition:background .4s;
+  }
+  .sp-phase:first-child .sp-phase-line-l { background:transparent !important; }
+  .sp-phase:last-child  .sp-phase-line-r { background:transparent !important; }
+
+  .sp-phase-node {
+    width:28px; height:28px; border-radius:50%; flex-shrink:0;
+    border:2px solid var(--surface4); background:var(--surface3);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:1; transition:all .3s;
+    font-size:11px; font-weight:700; color:var(--text3);
+  }
+  .sp-phase-node svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* states */
+  .sp-phase.sp-done .sp-phase-node {
+    background:var(--green); border-color:var(--green); color:#fff;
+    box-shadow:0 0 8px rgba(61,186,128,.45);
+  }
+  .sp-phase.sp-done .sp-phase-line-l,
+  .sp-phase.sp-done .sp-phase-line-r { background:var(--green); }
+  .sp-phase.sp-active .sp-phase-node {
+    background:var(--accent); border-color:var(--accent); color:#fff;
+    box-shadow:0 0 12px rgba(224,112,64,.60);
+    animation:sp-pulse 2s ease-in-out infinite;
+  }
+  .sp-phase.sp-active .sp-phase-line-l { background:var(--green); }
+  @keyframes sp-pulse {
+    0%,100%{ box-shadow:0 0 8px rgba(224,112,64,.60); }
+    50%{ box-shadow:0 0 20px rgba(224,112,64,.90); }
+  }
+  .sp-phase.sp-partial .sp-phase-node {
+    background:var(--amber); border-color:var(--amber); color:#fff;
+    box-shadow:0 0 8px rgba(212,160,48,.45);
+  }
+  .sp-phase.sp-partial .sp-phase-line-l { background:var(--green); }
+
+  /* sub-steps inside a phase */
+  .sp-phase-detail {
+    margin-top:8px; width:100%; display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .sp-phase-title {
+    font-size:10.5px; font-weight:700; color:var(--text3); text-align:center; line-height:1.3;
+    transition:color .3s;
+  }
+  .sp-phase.sp-done   .sp-phase-title { color:var(--green); }
+  .sp-phase.sp-active .sp-phase-title { color:var(--accent); font-weight:800; }
+  .sp-phase.sp-partial .sp-phase-title { color:var(--amber); }
+
+  .sp-sub-steps { display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; }
+  .sp-sub-step {
+    font-size:9.5px; font-weight:600; color:var(--text3); background:var(--surface3);
+    border:1px solid var(--border); border-radius:4px; padding:1px 6px;
+    text-align:center; width:90%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    transition:all .3s;
+  }
+  .sp-sub-step.ss-done    { background:rgba(61,186,128,.15); border-color:rgba(61,186,128,.35); color:var(--green); }
+  .sp-sub-step.ss-active  { background:rgba(224,112,64,.15); border-color:rgba(224,112,64,.40); color:var(--accent); font-weight:700; }
+  .sp-sub-step.ss-partial { background:rgba(212,160,48,.15); border-color:rgba(212,160,48,.35); color:var(--amber); }
+
+  .sp-empty { color:var(--text2); font-size:13px; text-align:center; padding:3rem 0; }
+
+  @media(max-width:700px){
+    .sp-stepper { grid-template-columns:repeat(2,1fr); gap:8px; }
+    .sp-phase:nth-child(2) .sp-phase-line-r,
+    .sp-phase:nth-child(3) .sp-phase-line-l { display:none; }
+    .sp-kpis { gap:7px; }
+    .sp-kpi  { min-width:80px; }
+    .sp-kpi-val { font-size:20px; }
+  }
 </style>
 </head>
 <body>
@@ -394,8 +533,8 @@
       <option value="COMPLETED">Completed</option>
       <option value="25% COMPLETED">25% Completed</option>
       <option value="50% COMPLETED">50% Completed</option>
-      <option value="75% OVER">75% Over</option>
-      <option value="YTS">Yet to Start (YTS)</option>
+      <option value="75% COMPLETED">75% Completed</option>
+      <option value="YET TO START">Yet to Start</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -463,9 +602,8 @@
         <option value="COMPLETED">Completed</option>
         <option value="25% COMPLETED">25% Completed</option>
         <option value="50% COMPLETED">50% Completed</option>
-        <option value="75% OVER">75% Over</option>
-        <option value="YTS">Yet to Start (YTS)</option>
-      </select>
+        <option value="75% COMPLETED">75% Completed</option>
+      <option value="YET TO START">Yet to Start</option>
     </div>
     <table class="data-table">
       <thead><tr>
@@ -478,6 +616,36 @@
       <tbody id="po-tbody"></tbody>
     </table>
     <span class="row-count" id="po-count"></span>
+  </div>
+
+  <!-- SALES PIPELINE TRACKER -->
+  <div class="card section-gap">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Sales Pipeline Tracker
+    </div>
+
+    <!-- KPIs -->
+    <div class="sp-kpis">
+      <div class="sp-kpi spk1"><div class="sp-kpi-label">Total Deals</div><div class="sp-kpi-val" id="sp-total">—</div></div>
+      <div class="sp-kpi spk2"><div class="sp-kpi-label">In Progress</div><div class="sp-kpi-val" id="sp-inprog">—</div></div>
+      <div class="sp-kpi spk3"><div class="sp-kpi-label">At PR Stage</div><div class="sp-kpi-val" id="sp-atpr">—</div></div>
+      <div class="sp-kpi spk4"><div class="sp-kpi-label">At PO Stage</div><div class="sp-kpi-val" id="sp-atpo">—</div></div>
+    </div>
+
+    <!-- Search + filter -->
+    <div class="sp-search-row">
+      <input class="sp-search-input" type="text" id="sp-search" placeholder="Search lead, customer, PR No…" oninput="renderSalesPipeline()">
+      <select class="sp-search-select" id="sp-stage-filter" onchange="renderSalesPipeline()">
+        <option value="">All stages</option>
+        <option value="travel">Travel</option>
+        <option value="lead">Lead</option>
+        <option value="pr">PR</option>
+        <option value="po">PO</option>
+      </select>
+    </div>
+
+    <div id="sp-cards-list"></div>
   </div>
 
   <div class="footer" id="footer-ts">—</div>
@@ -542,12 +710,12 @@ async function loadAll() {
 }
 
 // ── COLOUR HELPERS ──
-const STATUS_COLORS = {'new':{fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},'follow up':{fill:'#f59e0b',bar:'#f59e0b',pill:'pill-follow'},'qualified':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'proposal sent':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'closed won':{fill:'#06d6a0',bar:'#06d6a0',pill:'pill-won'},'closed lost':{fill:'#ef4444',bar:'#ef4444',pill:'pill-notsent'},'negotiation':{fill:'#f97316',bar:'#f97316',pill:'pill-follow'},'contacted':{fill:'#38bdf8',bar:'#38bdf8',pill:'pill-new'},'pr received':{fill:'#34d399',bar:'#34d399',pill:'pill-qual'},'pr processed':{fill:'#60a5fa',bar:'#60a5fa',pill:'pill-new'},'accepted':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'rejected':{fill:'#f43f5e',bar:'#f43f5e',pill:'pill-notsent'}};
+const STATUS_COLORS = {'new':{fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},'follow up':{fill:'#f59e0b',bar:'#f59e0b',pill:'pill-follow'},'qualified':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'proposal sent':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'closed won':{fill:'#06d6a0',bar:'#06d6a0',pill:'pill-won'},'closed lost':{fill:'#ef4444',bar:'#ef4444',pill:'pill-notsent'},'negotiation':{fill:'#f97316',bar:'#f97316',pill:'pill-follow'},'contacted':{fill:'#38bdf8',bar:'#38bdf8',pill:'pill-new'},'pr received':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'pr processed':{fill:'#60a5fa',bar:'#60a5fa',pill:'pill-new'},'accepted':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'rejected':{fill:'#f43f5e',bar:'#f43f5e',pill:'pill-notsent'}};
 const _dynColors=['#4a8fd4','#f59e0b','#10b981','#a78bfa','#f97316','#38bdf8','#e879f9','#06d6a0','#fb923c','#34d399','#818cf8','#f43f5e'];
 const _dynMap={};let _dynIdx=0;
 function si(s){const k=String(s||'').toLowerCase().trim();if(STATUS_COLORS[k])return STATUS_COLORS[k];if(!_dynMap[k]){_dynMap[k]=_dynColors[_dynIdx%_dynColors.length];_dynIdx++;}const c=_dynMap[k];return{fill:c,bar:c,pill:'pill-default'};}
 function pillPR(s){const v=String(s||'').toLowerCase().trim();if(v==='submitted')return'pill-sent';if(v==='not submitted')return'pill-notsent';return'pill-default';}
-function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yts')return'pill-yts';return'pill-default';}
+function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yet to start')return'pill-yet-to-start';return'pill-default';}
 function fmtDate(v){if(!v)return'—';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
@@ -579,7 +747,7 @@ function renderDashboard({travels,leads,prs,pos}) {
     'negotiation':'#f97316',
     'qualified':'#22c55e',
     'proposal sent':'#a78bfa',
-    'pr received':'#06b6d4',
+    'pr received':'#a78bfa',
     'pr processed':'#0ea5e9',
     'accepted':'#10b981',
     'closed won':'#16a34a',
@@ -596,7 +764,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   });
 
   renderPipeline();
-  renderVisits(); renderPRs(); renderPOs();
+  renderVisits(); renderPRs(); renderPOs(); renderSalesPipeline();
 
   const now=new Date().toLocaleString();
   set('file-info',`Google Sheets · refreshed ${now}`);
@@ -700,8 +868,8 @@ function renderPOs() {
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
     if(activeFilter){
-      const stage=String(r['Production Stage']||'').trim();
-      if(stage!==activeFilter) return false;
+      const stage=String(r['Production Stage']||'').trim().toUpperCase();
+      if(stage!==activeFilter.toUpperCase()) return false;
     }
     return true;
   });
@@ -713,7 +881,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']||'—'}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${(()=>{const s=String(r['Production Stage']||'').trim();return s==='YET TO START'?'Yet to Start':s==='75% OVER'?'75% Over':s==='75% COMPLETED'?'75% Completed':s==='50% COMPLETED'?'50% Completed':s==='25% COMPLETED'?'25% Completed':s||'—'})()}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -728,7 +896,7 @@ function applyAllFilters() {
   const pof=document.getElementById('po-stage-filter');
   if(gpo&&pof&&gpo.value&&!pof.value) pof.value=gpo.value;
 
-  renderVisits(); renderPRs(); renderPOs(); renderPipeline();
+  renderVisits(); renderPRs(); renderPOs(); renderPipeline(); renderSalesPipeline();
   const active=[
     document.getElementById('global-search').value,
     document.getElementById('filter-lead-status').value,
@@ -741,7 +909,7 @@ function applyAllFilters() {
 
 function clearAllFilters() {
   ['global-search','filter-lead-status','filter-pr-status','filter-po-stage',
-   'pr-search','pr-status-filter','po-search','po-stage-filter','visit-search'].forEach(id=>{
+   'pr-search','pr-status-filter','po-search','po-stage-filter','visit-search','sp-search','sp-stage-filter'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   applyAllFilters();
@@ -758,6 +926,230 @@ function sortTable(table,col,th) {
 function set(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
 function show(id,msg){const el=document.getElementById(id);if(el){el.classList.remove('hidden');el.style.display='';if(msg){const m=document.getElementById('load-msg');if(m)m.textContent=msg;}}}
 function hide(id){const el=document.getElementById(id);if(el){el.classList.add('hidden');el.style.display='none';}}
+
+// ═══════════════════════════════════════════════
+//  SALES PIPELINE TRACKER
+// ═══════════════════════════════════════════════
+
+function renderSalesPipeline() {
+  const q   = ((document.getElementById('sp-search')||{}).value||'').toLowerCase().trim();
+  const gq  = ((document.getElementById('global-search')||{}).value||'').toLowerCase().trim();
+  const stf = ((document.getElementById('sp-stage-filter')||{}).value||'').toLowerCase().trim();
+
+  // ── 1. Build a deal map keyed by Lead No ──
+  // Each deal: { leadNo, customer, leadStatus, visits[], prs[], pos[], farthestStage }
+  const dealMap = {};
+
+  // Seed from Leads (source of truth for lead no + customer)
+  (_data.aLeads||[]).forEach(r => {
+    const k = (r['Lead No']||'').trim();
+    if (!k) return;
+    dealMap[k] = {
+      leadNo:      k,
+      customer:    r['Plant Name Location'] || r['Customer Name'] || r['Lead No'] || '—',
+      leadStatus:  String(r['Lead Status']||'').trim(),
+      leadDate:    r['Date'] || r['Lead Date'] || '',
+      visits: [], prs: [], pos: [],
+    };
+  });
+
+  // Attach visits (Travel sheet keyed by Lead No)
+  (_data.aVisits||[]).forEach(r => {
+    const k = (r['Lead No']||'').trim();
+    if (dealMap[k]) dealMap[k].visits.push(r);
+    else {
+      // Visit with no lead record — create stub
+      dealMap[k] = {
+        leadNo: k, customer: r['Plant Name Location']||k,
+        leadStatus:'', leadDate:'', visits:[r], prs:[], pos:[],
+      };
+    }
+  });
+
+  // Attach PRs — join by Customer Name (normalised lowercase)
+  const customerToLeadNo = {};
+  Object.values(dealMap).forEach(d => {
+    if (d.customer && d.customer !== '—')
+      customerToLeadNo[d.customer.toLowerCase().trim()] = d.leadNo;
+  });
+
+  (_data.aPRs||[]).forEach(r => {
+    const cust = (r['Customer Name']||'').toLowerCase().trim();
+    const k = customerToLeadNo[cust];
+    if (k && dealMap[k]) dealMap[k].prs.push(r);
+  });
+
+  // Attach POs — join by Internal PR No matching PR's Internal PR No
+  const prNoToLeadNo = {};
+  Object.values(dealMap).forEach(d => {
+    d.prs.forEach(pr => {
+      const prNo = (pr['Internal PR No']||'').trim();
+      if (prNo) prNoToLeadNo[prNo] = d.leadNo;
+    });
+  });
+  // Also try Customer Name fallback for POs
+  (_data.aPOs||[]).forEach(r => {
+    const prRef  = (r['Internal PR']||r['Internal PR No']||'').trim();
+    const cust   = (r['Customer Name']||'').toLowerCase().trim();
+    const k      = prNoToLeadNo[prRef] || customerToLeadNo[cust];
+    if (k && dealMap[k]) dealMap[k].pos.push(r);
+  });
+
+  // ── 2. Compute farthest stage & progress for each deal ──
+  const PO_STAGE_PCT = {
+    '':0, 'PROCESSING':20, '25% COMPLETED':25,
+    '50% COMPLETED':50, '75% COMPLETED':75, '75% OVER':75,
+    'COMPLETED':100,
+  };
+  function poStagePct(s){ return PO_STAGE_PCT[String(s||'').trim().toUpperCase()] ?? 10; }
+
+  function dealProgress(d) {
+    if (d.pos.length) {
+      const best = Math.max(...d.pos.map(p => poStagePct(p['Production Stage'])));
+      // PO stage → 75–100% of total journey
+      return { stage:'po', pct: 75 + Math.round(best * 0.25) };
+    }
+    if (d.prs.length) {
+      const allSent = d.prs.every(p => {
+        const q = p['Quotation Status']||(p['Remark 3']?'submitted':'');
+        return String(q).toLowerCase().includes('submit');
+      });
+      return { stage:'pr', pct: allSent ? 70 : 55 };
+    }
+    if (d.visits.length) {
+      const ls = d.leadStatus.toLowerCase();
+      if (['closed won','accepted','qualified','pr received','pr processed'].some(x=>ls.includes(x)))
+        return { stage:'lead', pct:45 };
+      if (['proposal','negotiation'].some(x=>ls.includes(x)))
+        return { stage:'lead', pct:35 };
+      return { stage:'lead', pct:25 };
+    }
+    return { stage:'travel', pct: 10 };
+  }
+
+  // ── 3. Filter ──
+  let deals = Object.values(dealMap);
+  if (q)   deals = deals.filter(d => JSON.stringify(d).toLowerCase().includes(q));
+  if (gq)  deals = deals.filter(d => JSON.stringify(d).toLowerCase().includes(gq));
+  if (stf) deals = deals.filter(d => dealProgress(d).stage === stf);
+
+  // Sort: farthest stage first
+  const stageOrder = {po:4, pr:3, lead:2, travel:1};
+  deals.sort((a,b) => {
+    const pa = dealProgress(a), pb = dealProgress(b);
+    return (stageOrder[pb.stage]||0) - (stageOrder[pa.stage]||0) || pb.pct - pa.pct;
+  });
+
+  // ── 4. KPIs ──
+  const allDeals = Object.values(dealMap);
+  const kpis = { total:allDeals.length, inprog:0, atpr:0, atpo:0 };
+  allDeals.forEach(d => {
+    const s = dealProgress(d).stage;
+    if (s==='po')            kpis.atpo++;
+    else if (s==='pr')       kpis.atpr++;
+    else if (s==='lead'||s==='travel') kpis.inprog++;
+  });
+  set('sp-total',  kpis.total);
+  set('sp-inprog', kpis.inprog);
+  set('sp-atpr',   kpis.atpr);
+  set('sp-atpo',   kpis.atpo);
+
+  if (!deals.length) {
+    set('sp-cards-list', `<div class="sp-empty">${allDeals.length ? 'No deals match your search' : 'No data loaded yet'}</div>`);
+    return;
+  }
+
+  // ── 5. Render cards ──
+  const PHASE_ICONS = {
+    travel: `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    lead:   `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    pr:     `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    po:     `<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+  };
+
+  const PHASES = ['travel','lead','pr','po'];
+  const PHASE_LABELS = { travel:'Travel', lead:'Lead', pr:'Purchase Request', po:'Purchase Order' };
+
+  set('sp-cards-list', deals.map(d => {
+    const { stage: fStage, pct } = dealProgress(d);
+    const fIdx = PHASES.indexOf(fStage);
+    const pctColor = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--blue)' : pct >= 25 ? 'var(--amber)' : 'var(--accent)';
+    const lsColor  = (d.leadStatus && _data.statusColorMap) ? (_data.statusColorMap[d.leadStatus]||'var(--text3)') : 'var(--text3)';
+
+    const phases = PHASES.map((ph, pi) => {
+      const isDone   = pi < fIdx;
+      const isActive = pi === fIdx;
+      const cls = isDone ? 'sp-done' : isActive ? 'sp-active' : '';
+      const lineL = (isDone||isActive) ? 'background:var(--green)' : '';
+      const lineR = isDone             ? 'background:var(--green)' : '';
+
+      // Sub-step badges inside each phase
+      let subSteps = '';
+      if (ph === 'travel') {
+        const v = d.visits[0];
+        if (v) {
+          const dateBadge = v['Schedule Date'] ? fmtDate(v['Schedule Date']) : '';
+          const badge = dateBadge || v['Meeting Person and Designation'] || '';
+          subSteps = badge ? `<div class="sp-sub-step ${isDone?'ss-done':isActive?'ss-active':''}">${trunc(badge,22)}</div>` : '';
+        }
+      } else if (ph === 'lead') {
+        if (d.leadStatus) {
+          subSteps = `<div class="sp-sub-step ${isDone?'ss-done':isActive?'ss-active':''}" style="${isDone||isActive?'':'color:'+lsColor}">${trunc(d.leadStatus,20)}</div>`;
+        }
+      } else if (ph === 'pr') {
+        subSteps = d.prs.slice(0,2).map(pr => {
+          const qStat = pr['Quotation Status']||(pr['Remark 3']?'Submitted':'Pending');
+          const sent  = String(qStat).toLowerCase().includes('submit');
+          return `<div class="sp-sub-step ${isDone?'ss-done':sent?'ss-active':'ss-partial'}">${trunc(pr['Internal PR No']||'PR',14)} · ${sent?'Sent':'Pending'}</div>`;
+        }).join('');
+        if (d.prs.length > 2) subSteps += `<div class="sp-sub-step" style="color:var(--text3)">+${d.prs.length-2} more</div>`;
+      } else if (ph === 'po') {
+        subSteps = d.pos.slice(0,2).map(po => {
+          const s = String(po['Production Stage']||'').trim();
+          const p = poStagePct(s);
+          const sc = p===100?'ss-done':p>=50?'ss-active':'ss-partial';
+          return `<div class="sp-sub-step ${isDone?'ss-done':sc}">${trunc(s||'In Progress',18)}</div>`;
+        }).join('');
+        if (d.pos.length > 2) subSteps += `<div class="sp-sub-step" style="color:var(--text3)">+${d.pos.length-2} more</div>`;
+      }
+
+      return `<div class="sp-phase ${cls}">
+        <div class="sp-phase-track">
+          <div class="sp-phase-line-l" style="${lineL}"></div>
+          <div class="sp-phase-node">${PHASE_ICONS[ph]}</div>
+          <div class="sp-phase-line-r" style="${lineR}"></div>
+        </div>
+        <div class="sp-phase-detail">
+          <div class="sp-phase-title">${PHASE_LABELS[ph]}</div>
+          <div class="sp-sub-steps">${subSteps}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="sp-card">
+      <div class="sp-card-top">
+        <div class="sp-card-left">
+          <span class="sp-lead-id">${d.leadNo}</span>
+          <span class="sp-customer">${d.customer}</span>
+          <div class="sp-meta">
+            ${d.visits.length  ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--blue)"></span>${d.visits.length} visit${d.visits.length>1?'s':''}</span>` : ''}
+            ${d.prs.length     ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--amber)"></span>${d.prs.length} PR${d.prs.length>1?'s':''}</span>` : ''}
+            ${d.pos.length     ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--green)"></span>${d.pos.length} PO${d.pos.length>1?'s':''}</span>` : ''}
+            ${d.leadDate       ? `<span class="sp-meta-item" style="color:var(--text3)">${fmtDate(d.leadDate)}</span>` : ''}
+          </div>
+        </div>
+        <div class="sp-progress-wrap">
+          <span class="sp-progress-label">Progress</span>
+          <span class="sp-progress-pct" style="color:${pctColor}">${pct}%</span>
+        </div>
+      </div>
+      <div class="sp-stepper">${phases}</div>
+    </div>`;
+  }).join(''));
+}
+// ═══════════════════════════════════════════════
+//  END SALES PIPELINE TRACKER
+// ═══════════════════════════════════════════════
 
 loadAll();
 </script>
