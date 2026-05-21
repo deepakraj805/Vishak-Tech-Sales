@@ -278,7 +278,7 @@
   .pill-50{background:rgba(139,92,246,0.15);color:#c4b5fd}
   .pill-75{background:rgba(249,115,22,0.15);color:#fdba74}
   .pill-partial{background:rgba(139,92,246,0.15);color:#c4b5fd}
-  .pill-yts{background:rgba(99,102,241,0.15);color:#a5b4fc}
+  .pill-yet-to-start{background:rgba(99,102,241,0.15);color:#a5b4fc}
   .pill-default{background:var(--surface3);color:var(--text3)}
 
   .chart-wrap { position:relative; width:100%; height:170px; margin-top:1rem; }
@@ -715,7 +715,7 @@ const _dynColors=['#4a8fd4','#f59e0b','#10b981','#a78bfa','#f97316','#38bdf8','#
 const _dynMap={};let _dynIdx=0;
 function si(s){const k=String(s||'').toLowerCase().trim();if(STATUS_COLORS[k])return STATUS_COLORS[k];if(!_dynMap[k]){_dynMap[k]=_dynColors[_dynIdx%_dynColors.length];_dynIdx++;}const c=_dynMap[k];return{fill:c,bar:c,pill:'pill-default'};}
 function pillPR(s){const v=String(s||'').toLowerCase().trim();if(v==='submitted')return'pill-sent';if(v==='not submitted')return'pill-notsent';return'pill-default';}
-function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yts')return'pill-yts';return'pill-default';}
+function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%')&&!v.includes('over'))return'pill-75';if(v==='yet to start'||v==='yts')return'pill-yet-to-start';return'pill-default';}
 function fmtDate(v){if(!v)return'—';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
@@ -881,7 +881,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${(()=>{const s=String(r['Production Stage']||'').trim();return s==='YTS'?'Yet to Start':s==='75% OVER'?'75% Over':s==='75% COMPLETED'?'75% Completed':s==='50% COMPLETED'?'50% Completed':s==='25% COMPLETED'?'25% Completed':s||'—'})()}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${(()=>{const s=String(r['Production Stage']||'').trim();return s==='YET TO START'||s==='YTS'?'Yet to Start':s==='75% COMPLETED'?'75% Completed':s==='50% COMPLETED'?'50% Completed':s==='25% COMPLETED'?'25% Completed':s||'—'})()}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -997,9 +997,9 @@ function renderSalesPipeline() {
 
   // ── 2. Compute farthest stage & progress for each deal ──
   const PO_STAGE_PCT = {
-    'YTS':0, 'PROCESSING':20, '25% COMPLETED':25,
-    '50% COMPLETED':50, '75% COMPLETED':75, '75% OVER':75,
-    'COMPLETED':100,
+    '':0, 'PROCESSING':20, '25% COMPLETED':25,
+    '50% COMPLETED':50, '75% COMPLETED':75,
+    'COMPLETED':100, 'YET TO START':0, 'YTS':0,
   };
   function poStagePct(s){ return PO_STAGE_PCT[String(s||'').trim().toUpperCase()] ?? 10; }
 
