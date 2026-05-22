@@ -309,162 +309,6 @@
 
   @media(max-width:700px){ .kpi-grid{grid-template-columns:1fr 1fr} .row2{grid-template-columns:1fr} }
   @media(max-width:420px){ .kpi-grid{grid-template-columns:1fr} }
-
-  /* ═══════════════════════════════════════
-     PIPELINE TRACKER  (Cargo-pipeline style)
-     ═══════════════════════════════════════ */
-  .pipeline-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .pipeline-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem 1.4rem 0.8rem;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap; gap: 10px;
-  }
-  .pipeline-title {
-    font-size: 12px; font-weight: 800; letter-spacing: 1.2px;
-    text-transform: uppercase; color: var(--text2);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .pipeline-title svg { width:15px; height:15px; stroke:var(--accent); fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
-  .pipeline-kpi-row {
-    display: flex; gap: 10px; flex-wrap: wrap;
-    padding: 0.9rem 1.4rem; border-bottom: 1px solid var(--border);
-  }
-  .pl-kpi {
-    background: var(--surface2); border: 1px solid var(--border-strong);
-    border-radius: 10px; padding: 0.6rem 1rem; min-width: 90px;
-  }
-  .pl-kpi-label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 3px; }
-  .pl-kpi-val { font-size: 26px; font-weight: 800; font-family: 'DM Mono', monospace; line-height: 1; }
-  .pl-kpi-val.c-orange { color: var(--accent2); }
-  .pl-kpi-val.c-blue   { color: var(--blue);    }
-  .pl-kpi-val.c-green  { color: var(--green);   }
-  .pl-kpi-val.c-purple { color: #b890f8;        }
-  .pl-kpi-val.c-teal   { color: #34d4b0;        }
-
-  .pipeline-search-bar {
-    display: flex; align-items: center; gap: 8px; padding: 0.7rem 1.4rem;
-    border-bottom: 1px solid var(--border); flex-wrap: wrap;
-  }
-  .pipeline-search-input {
-    flex: 1; min-width: 200px;
-    background: var(--surface2); border: 1px solid var(--border-strong);
-    color: var(--text); border-radius: 8px;
-    padding: 0.4rem 0.75rem 0.4rem 2.2rem; font-size: 12.5px; font-family: inherit;
-    outline: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: 9px center;
-    transition: border-color 0.18s, box-shadow 0.18s;
-  }
-  .pipeline-search-input:focus { border-color: var(--border-accent); box-shadow: 0 0 0 3px rgba(224,112,64,0.12); }
-  .pipeline-search-input::placeholder { color: var(--text3); }
-  .pl-filter-sel {
-    background: var(--surface2); border: 1px solid var(--border-strong); color: var(--text2);
-    border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 12px; font-family: inherit;
-    outline: none; cursor: pointer;
-  }
-  .pl-filter-sel option { background: var(--surface2); }
-
-  /* individual PO card */
-  .pl-card {
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 1.4rem 1.2rem;
-    transition: background 0.15s;
-  }
-  .pl-card:last-child { border-bottom: none; }
-  .pl-card:hover { background: rgba(255,255,255,0.015); }
-
-  .pl-card-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 0.7rem; flex-wrap: wrap; gap: 6px;
-  }
-  .pl-card-ids { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .pl-po-id {
-    font-size: 15px; font-weight: 800; color: var(--accent2);
-    font-family: 'DM Mono', monospace; letter-spacing: -0.5px;
-  }
-  .pl-wo-id {
-    font-size: 11px; font-weight: 700; color: var(--text3);
-    font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
-  }
-  .pl-customer { font-size: 12.5px; color: var(--text2); font-weight: 500; }
-  .pl-progress-block { text-align: right; }
-  .pl-progress-label { font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
-  .pl-progress-val {
-    font-size: 22px; font-weight: 800; font-family: 'DM Mono', monospace;
-    line-height: 1; margin-top: 1px;
-  }
-  .pl-progress-val.p100 { color: var(--green); }
-  .pl-progress-val.p75  { color: #f0a030; }
-  .pl-progress-val.p50  { color: var(--blue); }
-  .pl-progress-val.p25  { color: var(--text2); }
-  .pl-progress-val.p0   { color: var(--text3); }
-
-  /* stepper row */
-  .pl-steps {
-    display: flex; align-items: flex-start; width: 100%;
-    overflow-x: auto; padding-bottom: 4px;
-    scrollbar-width: thin; scrollbar-color: var(--surface3) transparent;
-  }
-  .pl-steps::-webkit-scrollbar { height: 3px; }
-  .pl-steps::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
-  .pl-step {
-    display: flex; flex-direction: column; align-items: center;
-    flex: 1; min-width: 64px; position: relative;
-  }
-  /* connector line */
-  .pl-step:not(:last-child)::after {
-    content: '';
-    position: absolute; top: 14px; left: 50%; width: 100%;
-    height: 2px; background: var(--surface3);
-    z-index: 0;
-  }
-  .pl-step.done:not(:last-child)::after { background: var(--green); }
-  .pl-step.active:not(:last-child)::after { background: var(--surface3); }
-
-  .pl-dot {
-    width: 28px; height: 28px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; position: relative; z-index: 1;
-    flex-shrink: 0; transition: transform 0.2s;
-    border: 2px solid transparent;
-  }
-  .pl-dot.done {
-    background: var(--green); border-color: var(--green);
-    box-shadow: 0 0 10px rgba(61,186,128,0.45);
-  }
-  .pl-dot.active {
-    background: var(--surface2); border-color: var(--accent);
-    box-shadow: 0 0 12px rgba(224,112,64,0.35);
-    animation: pl-pulse 2s ease-in-out infinite;
-  }
-  .pl-dot.pending {
-    background: var(--surface2); border-color: var(--surface3);
-  }
-  @keyframes pl-pulse {
-    0%,100% { box-shadow: 0 0 12px rgba(224,112,64,0.35); }
-    50%      { box-shadow: 0 0 20px rgba(224,112,64,0.65); }
-  }
-  .pl-dot svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .pl-step-label {
-    margin-top: 7px; font-size: 10px; text-align: center;
-    line-height: 1.3; color: var(--text3); font-weight: 500;
-    max-width: 64px;
-  }
-  .pl-step.done .pl-step-label { color: var(--text2); }
-  .pl-step.active .pl-step-label { color: var(--accent2); font-weight: 700; }
-  .pl-step-date {
-    font-size: 9.5px; color: var(--green); font-family: 'DM Mono', monospace;
-    margin-top: 2px; text-align: center; font-weight: 600;
-  }
-  .pl-step.active .pl-step-date { color: var(--accent); }
-  .pl-empty { color: var(--text3); font-size: 12px; text-align: center; padding: 2rem 0; }
 </style>
 </head>
 <body>
@@ -555,21 +399,21 @@
     <span class="filter-label">🔍 Filters</span>
     <input class="filter-input" type="text" id="global-search" placeholder="Search all sections…" oninput="applyAllFilters()">
     <select class="filter-select" id="filter-lead-status" onchange="applyAllFilters()">
-      <option value="">All Lead Statuses</option>
+      <option value="">All Lead Status</option>
     </select>
     <select class="filter-select" id="filter-pr-status" onchange="applyAllFilters()">
-      <option value="">All PR Statuses</option>
+      <option value="">All PR Status</option>
       <option value="submitted">Submitted</option>
       <option value="not submitted">Not Submitted</option>
     </select>
     <select class="filter-select" id="filter-po-stage" onchange="applyAllFilters()">
-      <option value="">All PO Stages</option>
+      <option value="">All PO Stage</option>
       <option value="PROCESSING">Processing</option>
       <option value="COMPLETED">Completed</option>
       <option value="25% COMPLETED">25% Completed</option>
       <option value="50% COMPLETED">50% Completed</option>
-      <option value="75% OVER">75% Over</option>
-      <option value="YTS">Yet to Start (YTS)</option>
+      <option value="75% OVER">75% Completed</option>
+      <option value="YTS">Yet to Start</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -606,7 +450,7 @@
     <div class="card-search">
       <input class="card-search-input" type="text" id="pr-search" placeholder="Search PR No, description, customer…" oninput="renderPRs()">
       <select class="card-search-select" id="pr-status-filter" onchange="renderPRs()">
-        <option value="">All statuses</option>
+        <option value="">All Status</option>
         <option value="submitted">Submitted</option>
         <option value="not submitted">Not Submitted</option>
       </select>
@@ -632,13 +476,13 @@
     <div class="card-search">
       <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
       <select class="card-search-select" id="po-stage-filter" onchange="renderPOs()">
-        <option value="">All stages</option>
+        <option value="">All Stage</option>
         <option value="PROCESSING">Processing</option>
         <option value="COMPLETED">Completed</option>
         <option value="25% COMPLETED">25% Completed</option>
         <option value="50% COMPLETED">50% Completed</option>
-        <option value="75% OVER">75% Over</option>
-        <option value="YTS">Yet to Start (YTS)</option>
+        <option value="75% OVER">75% Completed</option>
+        <option value="YTS">Yet to Start</option>
       </select>
     </div>
     <table class="data-table">
@@ -652,51 +496,6 @@
       <tbody id="po-tbody"></tbody>
     </table>
     <span class="row-count" id="po-count"></span>
-  </div>
-
-  <!-- ═══════════ SALES PIPELINE TRACKER ═══════════ -->
-  <div class="pipeline-section section-gap" id="pl-section">
-
-    <!-- header -->
-    <div class="pipeline-header">
-      <div class="pipeline-title">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Sales Pipeline Tracker
-      </div>
-      <div style="font-size:11px;color:var(--text3);">Travel → Lead → PR → PO</div>
-    </div>
-
-    <!-- KPIs -->
-    <div class="pipeline-kpi-row" id="pl-kpi-row">
-      <div class="pl-kpi"><div class="pl-kpi-label">Total POs</div><div class="pl-kpi-val c-orange" id="pl-k-pos">—</div></div>
-      <div class="pl-kpi"><div class="pl-kpi-label">Leads</div><div class="pl-kpi-val c-teal" id="pl-k-leads">—</div></div>
-      <div class="pl-kpi"><div class="pl-kpi-label">PRs</div><div class="pl-kpi-val c-purple" id="pl-k-prs">—</div></div>
-      <div class="pl-kpi"><div class="pl-kpi-label">Visits</div><div class="pl-kpi-val c-blue" id="pl-k-visits">—</div></div>
-      <div class="pl-kpi"><div class="pl-kpi-label">Completed</div><div class="pl-kpi-val c-green" id="pl-k-done">—</div></div>
-      <div class="pl-kpi"><div class="pl-kpi-label">In Progress</div><div class="pl-kpi-val c-orange" id="pl-k-progress">—</div></div>
-    </div>
-
-    <!-- search bar -->
-    <div class="pipeline-search-bar">
-      <input class="pipeline-search-input" type="text" id="pl-search"
-        placeholder="Search PO / Lead / Customer…" oninput="renderPipelines()">
-      <select class="pl-filter-sel" id="pl-stage-filter" onchange="renderPipelines()">
-        <option value="">All Stages</option>
-        <option value="travel">Travel Only</option>
-        <option value="lead">Lead Stage</option>
-        <option value="pr">PR Stage</option>
-        <option value="po">PO Stage</option>
-      </select>
-      <select class="pl-filter-sel" id="pl-po-filter" onchange="renderPipelines()">
-        <option value="">All PO Stages</option>
-        <option value="PROCESSING">Processing</option>
-        <option value="COMPLETED">Completed</option>
-        <option value="YTS">Yet to Start</option>
-      </select>
-    </div>
-
-    <!-- cards injected here -->
-    <div id="pl-cards"></div>
   </div>
 
   <div class="footer" id="footer-ts">—</div>
@@ -788,7 +587,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   // Populate lead status dropdown + build stable per-status color map (assigned once, never shifts on filter)
   const statuses=[...new Set(_data.aLeads.map(r=>String(r['Lead Status']||'Unknown').trim()))].sort();
   const sel=document.getElementById('filter-lead-status');
-  sel.innerHTML='<option value="">All Lead Statuses</option>'+statuses.map(s=>`<option value="${s}">${s}</option>`).join('');
+  sel.innerHTML='<option value="">All Lead Status</option>'+statuses.map(s=>`<option value="${s}">${s}</option>`).join('');
   // Professional semantic palette — status name drives color, not position
   // Known statuses get hand-picked colors; unknowns get distinct palette slots
   const _SEMANTIC={
@@ -815,7 +614,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   });
 
   renderPipeline();
-  renderVisits(); renderPRs(); renderPOs(); renderPipelines();
+  renderVisits(); renderPRs(); renderPOs();
 
   const now=new Date().toLocaleString();
   set('file-info',`Google Sheets · refreshed ${now}`);
@@ -932,7 +731,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']||'—'}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']==='75% OVER'?'75% Completed':r['Production Stage']||'—'}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -977,254 +776,6 @@ function sortTable(table,col,th) {
 function set(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
 function show(id,msg){const el=document.getElementById(id);if(el){el.classList.remove('hidden');el.style.display='';if(msg){const m=document.getElementById('load-msg');if(m)m.textContent=msg;}}}
 function hide(id){const el=document.getElementById(id);if(el){el.classList.add('hidden');el.style.display='none';}}
-
-// ══════════════════════════════════════════════════════
-//  SALES PIPELINE TRACKER  (Cargo-pipeline style)
-// ══════════════════════════════════════════════════════
-
-// Pipeline steps definition
-const PL_STEPS = [
-  { key: 'visit',      label: 'Site Visit'    },
-  { key: 'lead',       label: 'Lead Created'  },
-  { key: 'followup',   label: 'Follow-Up'     },
-  { key: 'pr_recv',    label: 'PR Received'   },
-  { key: 'quotation',  label: 'Quotation'     },
-  { key: 'po',         label: 'PO Received'   },
-  { key: 'production', label: 'Production'    },
-  { key: 'qc',         label: 'QC / Cert'     },
-  { key: 'cargo',      label: 'Cargo Ready'   },
-  { key: 'delivered',  label: 'Delivered'     },
-];
-
-function buildPlRows() {
-  // -- maps --
-  const leadMap = {};
-  _data.aLeads.forEach(l => { const k = String(l['Lead No']||'').trim(); if(k) leadMap[k]=l; });
-
-  const visitMap = {};
-  _data.aVisits.forEach(v => {
-    const k = String(v['Lead No']||'').trim();
-    if(!k) return;
-    if(!visitMap[k]) visitMap[k]=[];
-    visitMap[k].push(v);
-  });
-
-  const prByLeadPR = {};
-  _data.aPRs.forEach(r => {
-    const prNo = String(r['Internal PR No']||'').trim();
-    if(prNo) prByLeadPR[prNo]=r;
-  });
-
-  const poByPR = {};
-  _data.aPOs.forEach(r => {
-    const ref = String(r['Internal PR']||'').trim();
-    if(ref) poByPR[ref]=r;
-  });
-
-  const rows = [];
-
-  // PO-centric rows first (richest data)
-  _data.aPOs.forEach(po => {
-    const prNo = String(po['Internal PR']||'').trim();
-    const pr   = prByLeadPR[prNo] || null;
-    // find lead by scanning leads for this PR no
-    let lead = null, leadNo = '';
-    if(prNo) {
-      lead = Object.values(leadMap).find(l => String(l['Internal PR No']||'').trim() === prNo) || null;
-      if(lead) leadNo = String(lead['Lead No']||'').trim();
-    }
-    const visits = leadNo ? (visitMap[leadNo]||[]) : [];
-
-    rows.push({ _type:'po', po, pr, lead, visits, leadNo, prNo });
-  });
-
-  // Lead/PR rows that don't yet have a PO
-  Object.values(leadMap).forEach(lead => {
-    const leadNo = String(lead['Lead No']||'').trim();
-    const prNo   = String(lead['Internal PR No']||'').trim();
-    const pr     = prNo ? prByLeadPR[prNo] : null;
-    // skip if already covered by PO row
-    if(prNo && poByPR[prNo]) return;
-    const visits = visitMap[leadNo]||[];
-    rows.push({ _type:'lead', po:null, pr, lead, visits, leadNo, prNo });
-  });
-
-  // Visit-only rows
-  Object.keys(visitMap).forEach(k => {
-    if(leadMap[k]) return; // covered above
-    const visits = visitMap[k]||[];
-    rows.push({ _type:'visit', po:null, pr:null, lead:null, visits, leadNo:k, prNo:'' });
-  });
-
-  return rows;
-}
-
-function plStepState(row) {
-  const { po, pr, lead, visits } = row;
-  const hasVisit    = visits && visits.length > 0;
-  const hasLead     = !!lead;
-  const hasFollowup = lead && [1,2,3,4,5].some(i=>lead[`Followup Remark ${i}`]);
-  const hasPR       = !!pr;
-  const hasQuot     = pr && (String(pr['Quotation Status']||'').toLowerCase()==='submitted' ||
-                              pr['Quotation Number']);
-  const hasPO       = !!po;
-  const hasProd     = po && po['Production Stage'] && po['Production Stage']!=='YTS';
-  const hasQC       = po && po['QC Certificate'] && po['QC Certificate']!=='';
-  const hasCargo    = po && po['Re Packing Details'] && po['Re Packing Details']!=='';
-  const hasDelivered= po && String(po['Production Stage']||'').toUpperCase()==='COMPLETED';
-
-  return [hasVisit, hasLead, hasFollowup, hasPR, hasQuot, hasPO, hasProd, hasQC, hasCargo, hasDelivered];
-}
-
-function plStepDate(row, stepIdx) {
-  const { po, pr, lead, visits } = row;
-  try {
-    if(stepIdx===0 && visits && visits.length>0) return fmtDateShort(visits[0]['Schedule Date']);
-    if(stepIdx===1 && lead) return fmtDateShort(lead['Lead Generated Date']);
-    if(stepIdx===2 && lead) {
-      for(let i=1;i<=5;i++){if(lead[`Followup Date ${i}`]) return fmtDateShort(lead[`Followup Date ${i}`]);}
-    }
-    if(stepIdx===3 && pr) return fmtDateShort(pr['PR Date']);
-    if(stepIdx===4 && pr) return fmtDateShort(pr['Quotation Date']);
-    if(stepIdx===5 && po) return fmtDateShort(po['Date']);
-    if(stepIdx===9 && po && String(po['Production Stage']||'').toUpperCase()==='COMPLETED') return '';
-  } catch(e) {}
-  return '';
-}
-
-function fmtDateShort(v) {
-  if(!v) return '';
-  // Handle Excel serial dates
-  if(!isNaN(v) && Number(v)>40000) {
-    const d = new Date(Math.round((Number(v)-25569)*86400*1000));
-    return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
-  }
-  // Try dd.mm.yyyy or normal
-  const m = String(v).match(/(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})/);
-  if(m) return `${m[1].padStart(2,'0')}/${m[2].padStart(2,'0')}/${m[3].length===2?'20'+m[3]:m[3]}`;
-  return '';
-}
-
-function plProgress(states) {
-  const done = states.filter(Boolean).length;
-  return Math.round((done / states.length) * 100);
-}
-
-function plProgressClass(pct) {
-  if(pct===100) return 'p100';
-  if(pct>=75)   return 'p75';
-  if(pct>=50)   return 'p50';
-  if(pct>0)     return 'p25';
-  return 'p0';
-}
-
-function plStageOf(row) {
-  if(row.po)      return 'po';
-  if(row.pr)      return 'pr';
-  if(row.lead)    return 'lead';
-  return 'travel';
-}
-
-function plCardHTML(row) {
-  const states = plStepState(row);
-  const pct    = plProgress(states);
-  const pClass = plProgressClass(pct);
-
-  const poId    = row.po ? (row.po['PO Number']||row.po['Internal PR']||'—') : (row.leadNo||'—');
-  const prRef   = row.prNo || (row.pr ? row.pr['Internal PR No'] : '') || '';
-  const woId    = prRef ? prRef : '';
-  const customer= (row.po&&row.po['Customer Name']) || (row.lead&&row.lead['Plant Name and Location']) ||
-                  (row.visits&&row.visits[0]&&row.visits[0]['Plant Name Location']) || '—';
-
-  // find first undone step index (active)
-  let activeIdx = states.findIndex(s=>!s);
-
-  const stepsHTML = PL_STEPS.map((step, i) => {
-    const done   = states[i];
-    const active = !done && i === activeIdx;
-    const cls    = done ? 'done' : active ? 'active' : 'pending';
-    const date   = plStepDate(row, i);
-
-    const dotIcon = done
-      ? `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`
-      : active
-        ? `<span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:block;"></span>`
-        : ``;
-
-    return `<div class="pl-step ${cls}">
-      <div class="pl-dot ${cls}">${dotIcon}</div>
-      <div class="pl-step-label">${step.label}</div>
-      ${date ? `<div class="pl-step-date">${date}</div>` : '<div class="pl-step-date" style="opacity:0">.</div>'}
-    </div>`;
-  }).join('');
-
-  return `<div class="pl-card">
-    <div class="pl-card-top">
-      <div>
-        <div class="pl-card-ids">
-          <span class="pl-po-id">${poId}</span>
-          ${woId ? `<span class="pl-wo-id">${woId}</span>` : ''}
-        </div>
-        <div class="pl-customer">${trunc(customer, 60)}</div>
-      </div>
-      <div class="pl-progress-block">
-        <div class="pl-progress-label">Progress</div>
-        <div class="pl-progress-val ${pClass}">${pct}%</div>
-      </div>
-    </div>
-    <div class="pl-steps">${stepsHTML}</div>
-  </div>`;
-}
-
-function renderPipelines() {
-  const q   = (document.getElementById('pl-search')||{}).value || '';
-  const sf  = (document.getElementById('pl-stage-filter')||{}).value || '';
-  const pof = (document.getElementById('pl-po-filter')||{}).value || '';
-
-  const allRows = buildPlRows();
-
-  // update KPIs
-  set('pl-k-pos',   _data.aPOs.length);
-  set('pl-k-leads', _data.aLeads.length);
-  set('pl-k-prs',   _data.aPRs.length);
-  set('pl-k-visits',_data.aVisits.length);
-  const done = allRows.filter(r => plProgress(plStepState(r))===100).length;
-  const inprogress = allRows.filter(r => { const p=plProgress(plStepState(r)); return p>0&&p<100; }).length;
-  set('pl-k-done',     done);
-  set('pl-k-progress', inprogress);
-
-  let rows = allRows.filter(row => {
-    if(sf && plStageOf(row) !== sf) return false;
-    if(pof && !(row.po && String(row.po['Production Stage']||'').toUpperCase()===pof.toUpperCase())) return false;
-    if(q) {
-      const qL = q.toLowerCase();
-      const haystack = [
-        row.leadNo, row.prNo,
-        row.po&&row.po['Customer Name'], row.po&&row.po['PO Number'],
-        row.lead&&row.lead['Plant Name and Location'],
-        row.pr&&row.pr['PR Description'],
-        row.visits&&row.visits[0]&&row.visits[0]['Plant Name Location'],
-      ].filter(Boolean).join(' ');
-      if(!haystack.toLowerCase().includes(qL)) return false;
-    }
-    return true;
-  });
-
-  if(rows.length===0) {
-    set('pl-cards', '<div class="pl-empty">No pipeline entries match the current filters.</div>');
-    return;
-  }
-
-  // Sort: PO-stage rows first, then lead, then travel; within each by progress desc
-  rows.sort((a,b) => {
-    const stageOrder = {po:0,pr:1,lead:2,travel:3};
-    const sd = (stageOrder[plStageOf(a)]||9) - (stageOrder[plStageOf(b)]||9);
-    if(sd!==0) return sd;
-    return plProgress(plStepState(b)) - plProgress(plStepState(a));
-  });
-
-  set('pl-cards', rows.map(plCardHTML).join(''));
-}
 
 loadAll();
 </script>
