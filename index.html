@@ -4,41 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vishak Tech — Sales Pipeline Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    /* ── Page background ── deep navy-slate */
-    --bg:       #080c14;
-    --bg2:      #0c1220;
+    /* ── Page background ── deep charcoal with warm tint */
+    --bg:       #0f1210;
+    --bg2:      #131713;
 
-    /* ── Card surfaces ── rich blue-grey */
-    --surface:  #101828;
-    --surface2: #141f30;
-    --surface3: #1a2740;
-    --surface4: #213050;
+    /* ── Card surfaces ── forest-green dark */
+    --surface:  #181f1a;
+    --surface2: #1e2720;
+    --surface3: #253028;
+    --surface4: #2c3930;
 
-    /* ── Borders ── vivid cyan-blue tinted */
-    --border:        rgba(80,160,255,0.10);
-    --border-strong: rgba(80,160,255,0.22);
-    --border-accent: rgba(80,160,255,0.55);
+    /* ── Borders ── teal-green tinted */
+    --border:        rgba(80,180,120,0.12);
+    --border-strong: rgba(80,180,120,0.24);
+    --border-accent: rgba(80,180,120,0.52);
 
-    /* ── Text ── crisp cool white */
-    --text:  #eef4ff;
-    --text2: #8baad4;
-    --text3: #4d6a90;
+    /* ── Text ── warm white with green tint */
+    --text:  #e2ede6;
+    --text2: #8ab49a;
+    --text3: #4d7060;
 
-    /* ── Brand accent — vivid amber-orange ── */
-    --accent:      #ff7a35;
-    --accent2:     #ff9a5c;
-    --accent-glow: rgba(255,122,53,0.25);
+    /* ── Brand accent — warm orange matching logo ── */
+    --accent:      #e07040;
+    --accent2:     #f0905a;
+    --accent-glow: rgba(224,112,64,0.22);
 
-    /* ── Semantic colours — more vibrant ── */
-    --blue:   #38b8f0; --blue-bg:   rgba(56,184,240,0.12);
-    --green:  #22d98a; --green-bg:  rgba(34,217,138,0.12);
-    --amber:  #f5b030; --amber-bg:  rgba(245,176,48,0.12);
-    --purple: #a568f0; --purple-bg: rgba(165,104,240,0.12);
-    --red:    #f05060;
+    /* ── Semantic colours ── */
+    --blue:   #41a8c8; --blue-bg:   rgba(65,168,200,0.13);
+    --green:  #3dba80; --green-bg:  rgba(61,186,128,0.13);
+    --amber:  #d4a030; --amber-bg:  rgba(212,160,48,0.13);
+    --purple: #9060d0; --purple-bg: rgba(144,96,208,0.13);
+    --red:    #d05050;
 
     --radius: 12px; --radius-lg: 16px; --radius-xl: 20px;
   }
@@ -48,11 +49,10 @@
     background: var(--bg);
     /* subtle warm-cool gradient wash that matches the brand */
     background-image:
-      radial-gradient(ellipse 110% 55% at 50% -5%,  rgba(255,122,53,0.08) 0%, transparent 55%),
-      radial-gradient(ellipse  65% 45% at 95% 100%, rgba(34,217,138,0.07) 0%, transparent 50%),
-      radial-gradient(ellipse  45% 35% at  0% 60%,  rgba(56,184,240,0.06) 0%, transparent 50%),
-      radial-gradient(ellipse  30% 30% at 50% 50%,  rgba(165,104,240,0.03) 0%, transparent 60%);
-    color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; font-weight: 500;
+      radial-gradient(ellipse 100% 55% at 50% -5%,  rgba(224,112,64,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse  60% 40% at 95% 100%, rgba(61,186,128,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse  40% 30% at  0% 60%,  rgba(65,168,200,0.04) 0%, transparent 50%);
+    color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; font-weight: 420;
   }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -69,7 +69,7 @@
   .loader-box { text-align: center; }
   .spinner { width: 38px; height: 38px; border: 2.5px solid var(--border-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 1.25rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loader-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .loader-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
   .loader-sub { font-size: 12px; color: var(--text3); }
 
   /* ERROR */
@@ -79,8 +79,8 @@
   .error-icon { font-size: 36px; margin-bottom: 1rem; }
   .error-title { font-size: 17px; font-weight: 600; margin-bottom: 0.5rem; }
   .error-msg { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6; }
-  .retry-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0.65rem 1.5rem; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; box-shadow: 0 0 20px rgba(255,122,53,0.40); }
-  .retry-btn:hover { background: var(--accent2); box-shadow: 0 0 28px rgba(255,122,53,0.60); }
+  .retry-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0.65rem 1.5rem; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; box-shadow: 0 0 20px rgba(224,112,64,0.35); }
+  .retry-btn:hover { background: var(--accent2); box-shadow: 0 0 28px rgba(224,112,64,0.50); }
 
   /* LAYOUT */
   #dashboard { display: none; max-width: 1240px; margin: 0 auto; padding: 1.5rem 1.5rem 3.5rem; }
@@ -96,25 +96,25 @@
     padding: 0.85rem 1.4rem;
     margin-bottom: 1.4rem;
     gap: 1rem; flex-wrap: wrap;
-    box-shadow: 0 1px 0 rgba(255,122,53,0.10), 0 6px 30px rgba(0,0,0,0.70), 0 0 0 1px rgba(80,160,255,0.05);
+    box-shadow: 0 1px 0 rgba(224,112,64,0.08), 0 6px 30px rgba(0,0,0,0.60), 0 0 0 1px rgba(80,180,120,0.05);
     backdrop-filter: blur(12px);
   }
   .brand { display: flex; align-items: center; gap: 11px; }
   .brand-icon {
     width: 36px; height: 36px;
-    background: linear-gradient(135deg, #ff7a35, #cc3800);
+    background: linear-gradient(135deg, #e07040, #b83018);
     border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    box-shadow: 0 0 20px rgba(255,122,53,0.45);
+    box-shadow: 0 0 18px rgba(224,112,64,0.40);
   }
   .brand-icon svg { width: 17px; height: 17px; stroke: white; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
   .brand-name { font-size: 16px; font-weight: 800; letter-spacing: -0.4px; color: #ffffff; }
-  .brand-sub { font-size: 11px; color: var(--text2); margin-top: 1px; font-weight: 600; letter-spacing: 0.3px; }
+  .brand-sub { font-size: 11px; color: var(--text3); margin-top: 1px; font-weight: 500; letter-spacing: 0.3px; }
   .topbar-right { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
   .hbtn {
     display: flex; align-items: center; gap: 6px;
     background: var(--surface2);
     border: 1px solid var(--border-strong);
-    padding: 0.42rem 0.85rem; border-radius: 9px; font-size: 12px; font-weight: 600;
+    padding: 0.42rem 0.85rem; border-radius: 9px; font-size: 12px; font-weight: 500;
     color: var(--text2); cursor: pointer; font-family: inherit; transition: all 0.18s;
     white-space: nowrap; text-decoration: none;
   }
@@ -137,18 +137,18 @@
   .kpi:hover { border-color: var(--border-accent); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; border-radius:16px 16px 0 0; }
   .kpi::after { content:''; position:absolute; top:0; right:0; width:56px; height:56px; border-radius:50%; opacity:0.06; }
-  .kpi.k1::before{background:linear-gradient(90deg,#ff7a35,#ffaa70)} .kpi.k1::after{background:#ff7a35;transform:translate(30%,-30%)}
-  .kpi.k2::before{background:linear-gradient(90deg,#22d98a,#50f0b0)} .kpi.k2::after{background:#22d98a;transform:translate(30%,-30%)}
-  .kpi.k3::before{background:linear-gradient(90deg,#38b8f0,#60d8ff)} .kpi.k3::after{background:#38b8f0;transform:translate(30%,-30%)}
-  .kpi.k4::before{background:linear-gradient(90deg,#a568f0,#c898ff)} .kpi.k4::after{background:#a568f0;transform:translate(30%,-30%)}
+  .kpi.k1::before{background:linear-gradient(90deg,#e07040,#f09060)} .kpi.k1::after{background:#e07040;transform:translate(30%,-30%)}
+  .kpi.k2::before{background:linear-gradient(90deg,#3dba80,#60d49a)} .kpi.k2::after{background:#3dba80;transform:translate(30%,-30%)}
+  .kpi.k3::before{background:linear-gradient(90deg,#41a8c8,#60c8e8)} .kpi.k3::after{background:#41a8c8;transform:translate(30%,-30%)}
+  .kpi.k4::before{background:linear-gradient(90deg,#9b6fe0,#b890f8)} .kpi.k4::after{background:#9b6fe0;transform:translate(30%,-30%)}
   .kpi-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; flex-shrink:0; }
-  .kpi.k1 .kpi-icon{background:rgba(255,122,53,0.15);} .kpi.k2 .kpi-icon{background:rgba(34,217,138,0.15);} .kpi.k3 .kpi-icon{background:rgba(56,184,240,0.15);} .kpi.k4 .kpi-icon{background:rgba(165,104,240,0.15);}
+  .kpi.k1 .kpi-icon{background:rgba(224,112,64,0.15);} .kpi.k2 .kpi-icon{background:rgba(61,186,128,0.15);} .kpi.k3 .kpi-icon{background:rgba(74,144,217,0.15);} .kpi.k4 .kpi-icon{background:rgba(155,111,224,0.15);}
   .kpi-icon svg { width:16px; height:16px; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; fill:none; }
-  .kpi.k1 .kpi-icon svg{stroke:#ffaa70} .kpi.k2 .kpi-icon svg{stroke:#50f0b0} .kpi.k3 .kpi-icon svg{stroke:#70d8ff} .kpi.k4 .kpi-icon svg{stroke:#c898ff}
-  .kpi-label { font-size:11px; color:var(--text2); font-weight:700; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:4px; }
-  .kpi-val { font-size:38px; font-weight:800; line-height:1; font-family:'DM Mono',monospace; letter-spacing:-1.5px; }
-  .kpi.k1 .kpi-val{color:#ffb080} .kpi.k2 .kpi-val{color:#60f4c0} .kpi.k3 .kpi-val{color:#80e0ff} .kpi.k4 .kpi-val{color:#d0a8ff}
-  .kpi-sub { font-size:11px; color:var(--text2); margin-top:7px; font-weight:600; }
+  .kpi.k1 .kpi-icon svg{stroke:#f09060} .kpi.k2 .kpi-icon svg{stroke:#60d49a} .kpi.k3 .kpi-icon svg{stroke:#70b0f0} .kpi.k4 .kpi-icon svg{stroke:#b890f8}
+  .kpi-label { font-size:11px; color:var(--text3); font-weight:600; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:4px; }
+  .kpi-val { font-size:38px; font-weight:700; line-height:1; font-family:'DM Mono',monospace; letter-spacing:-1.5px; }
+  .kpi.k1 .kpi-val{color:#f5b090} .kpi.k2 .kpi-val{color:#80e8b8} .kpi.k3 .kpi-val{color:#90c8f8} .kpi.k4 .kpi-val{color:#c8a8f8}
+  .kpi-sub { font-size:11px; color:var(--text3); margin-top:7px; font-weight:500; }
 
   /* FILTER BAR */
   .filter-bar {
@@ -158,7 +158,7 @@
     border-radius: var(--radius);
     padding: 0.65rem 1rem; margin-bottom: 1.4rem;
   }
-  .filter-label { font-size:11px; font-weight:800; color:var(--text2); text-transform:uppercase; letter-spacing:0.6px; margin-right:2px; white-space:nowrap; }
+  .filter-label { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.6px; margin-right:2px; white-space:nowrap; }
   .filter-input {
     background: var(--surface2); border: 1px solid var(--border-strong); color: var(--text);
     border-radius: 8px; padding: 0.38rem 0.75rem 0.38rem 2.1rem; font-size: 12px; font-family: inherit;
@@ -166,7 +166,7 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
     background-repeat:no-repeat; background-position:9px center;
   }
-  .filter-input:focus { border-color: var(--border-accent); width: 225px; box-shadow: 0 0 0 3px rgba(80,160,255,0.14); }
+  .filter-input:focus { border-color: var(--border-accent); width: 225px; box-shadow: 0 0 0 3px rgba(224,112,64,0.12); }
   .filter-input::placeholder { color: var(--text3); }
   .filter-select {
     background: var(--surface2); border: 1px solid var(--border-strong); color: var(--text2);
@@ -194,7 +194,7 @@
   }
   .card:hover { border-color: var(--border-strong); }
   .card-title {
-    font-size: 11.5px; font-weight: 800; color: var(--text);
+    font-size: 11.5px; font-weight: 700; color: var(--text2);
     text-transform: uppercase; letter-spacing: 0.7px;
     margin-bottom: 1.1rem; display: flex; align-items: center; gap: 8px;
     padding-bottom: 0.85rem; border-bottom: 1px solid var(--border);
@@ -220,10 +220,10 @@
 
   /* PIPE BARS */
   .pipe-row { display:flex; align-items:center; gap:10px; margin-bottom:9px; }
-  .pipe-label { font-size:12.5px; color:var(--text); width:118px; flex-shrink:0; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pipe-label { font-size:12.5px; color:var(--text2); width:118px; flex-shrink:0; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .pipe-track { flex:1; height:6px; background:var(--surface3); border-radius:4px; overflow:hidden; }
   .pipe-fill { height:100%; border-radius:4px; transition:width 0.8s cubic-bezier(.4,0,.2,1); }
-  .pipe-n { font-size:12px; font-weight:700; width:24px; text-align:right; font-family:'DM Mono',monospace; color:var(--text); }
+  .pipe-n { font-size:12px; font-weight:700; width:24px; text-align:right; font-family:'DM Mono',monospace; color:var(--text2); }
   .pipe-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
   /* VISITS */
@@ -235,15 +235,15 @@
   .visit-item:last-child { border-bottom:none; }
   .visit-dot { width:8px; height:8px; border-radius:50%; margin-top:6px; flex-shrink:0; }
   .visit-name { font-size:13px; font-weight:700; color:#fff; }
-  .visit-meta { font-size:11.5px; color:var(--text2); margin-top:3px; font-weight:600; }
-  .visit-note { font-size:11.5px; color:var(--text2); margin-top:4px; line-height:1.5; }
+  .visit-meta { font-size:11.5px; color:var(--text3); margin-top:3px; font-weight:500; }
+  .visit-note { font-size:11.5px; color:var(--text3); margin-top:4px; line-height:1.5; }
   .visit-badge { margin-left:auto; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:6px; white-space:nowrap; font-family:'DM Mono',monospace; }
 
   /* TABLES */
   .data-table { width:100%; border-collapse:collapse; font-size:13px; }
   .data-table th {
     text-align:left; font-size:10.5px; font-weight:700; text-transform:uppercase;
-    letter-spacing:0.6px; color:var(--text2); padding: 0 8px 11px 0;
+    letter-spacing:0.6px; color:var(--text3); padding: 0 8px 11px 0;
     border-bottom: 1px solid var(--border-strong); cursor:pointer; user-select:none; white-space:nowrap;
     transition: color 0.15s;
   }
@@ -253,13 +253,13 @@
   .data-table th.sorted .sort-icon { opacity:1; color:var(--accent); }
   .data-table td {
     padding: 10px 8px 10px 0; border-bottom: 1px solid var(--border);
-    color: var(--text); vertical-align: middle; font-weight: 500;
+    color: var(--text2); vertical-align: middle; font-weight: 450;
     transition: background 0.12s;
   }
   .data-table tbody tr:hover td { background: var(--surface2); }
   .data-table tr:last-child td { border-bottom: none; }
   .data-table td.name { color: var(--text); font-weight: 600; }
-  .data-table td.mono { font-family:'DM Mono',monospace; font-size:12px; color:var(--text2); font-weight:700; }
+  .data-table td.mono { font-family:'DM Mono',monospace; font-size:12px; color:var(--text3); font-weight:600; }
 
   /* PILLS */
   .pill { display:inline-flex; align-items:center; font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px; letter-spacing:0.2px; }
@@ -281,11 +281,11 @@
   .pill-yts{background:rgba(99,102,241,0.15);color:#a5b4fc}
   .pill-default{background:var(--surface3);color:var(--text3)}
 
-  .chart-wrap { position:relative; width:100%; height:170px; margin-top:1rem; display:flex; justify-content:center; align-items:center; }
-  .empty { color:var(--text2); font-size:12px; text-align:center; padding:2rem 0; }
-  .footer { margin-top:2.5rem; font-size:11px; color:var(--text2); text-align:center; font-family:'DM Mono',monospace; letter-spacing:0.3px; }
+  .chart-wrap { position:relative; width:100%; height:170px; margin-top:1rem; }
+  .empty { color:var(--text3); font-size:12px; text-align:center; padding:2rem 0; }
+  .footer { margin-top:2.5rem; font-size:11px; color:var(--text3); text-align:center; font-family:'DM Mono',monospace; letter-spacing:0.3px; }
   .section-gap { margin-bottom:16px; }
-  .row-count { font-size:11px; color:var(--text2); font-family:'DM Mono',monospace; margin-top:9px; display:block; }
+  .row-count { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; margin-top:9px; display:block; }
 
   /* NOTICE */
   .notice { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:var(--radius); padding:0.75rem 1rem; font-size:12px; color:var(--amber); margin-bottom:1.4rem; display:none; align-items:center; gap:8px; }
@@ -293,256 +293,6 @@
 
   @media(max-width:700px){ .kpi-grid{grid-template-columns:1fr 1fr} .row2{grid-template-columns:1fr} }
   @media(max-width:420px){ .kpi-grid{grid-template-columns:1fr} }
-
-  /* ── SALES TRACKER (Travel→Lead→PR→PO cards) ── */
-  .st-search-row { display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-  .st-search-input {
-    flex:1; min-width:160px; max-width:280px;
-    background:var(--surface2); border:1px solid var(--border-strong);
-    color:var(--text); border-radius:8px;
-    padding:.42rem .75rem .42rem 2.1rem; font-size:12px; font-family:inherit; outline:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:9px center; transition: border-color .18s;
-  }
-  .st-search-input:focus { border-color:var(--border-accent); box-shadow:0 0 0 3px rgba(80,160,255,.12); }
-  .st-search-input::placeholder { color:var(--text3); }
-  .st-search-select {
-    background:var(--surface2); border:1px solid var(--border-strong); color:var(--text2);
-    border-radius:8px; padding:.42rem .7rem; font-size:12px; font-family:inherit; outline:none; cursor:pointer;
-  }
-  .st-search-select:focus { border-color:var(--border-accent); color:var(--text); }
-  .st-search-select option { background:var(--surface2); }
-
-  .st-kpis { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-  .st-kpi {
-    background:var(--surface2); border:1px solid var(--border); border-radius:10px;
-    padding:.65rem 1rem; min-width:90px;
-  }
-  .st-kpi-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--text3); }
-  .st-kpi-val   { font-size:24px; font-weight:800; font-family:'DM Mono',monospace; line-height:1.2; }
-  .st-kpi.stk1 .st-kpi-val { color:var(--text); }
-  .st-kpi.stk2 .st-kpi-val { color:var(--blue); }
-  .st-kpi.stk3 .st-kpi-val { color:var(--amber); }
-  .st-kpi.stk4 .st-kpi-val { color:var(--green); }
-
-  /* ST card */
-  .st-card {
-    background:var(--surface2); border:1px solid var(--border);
-    border-radius:var(--radius); padding:1rem 1.2rem 1.1rem;
-    margin-bottom:10px; transition: border-color .2s, box-shadow .2s;
-  }
-  .st-card:hover { border-color:var(--border-accent); box-shadow:0 4px 22px rgba(0,0,0,.35); }
-  .st-card-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; gap:8px; }
-  .st-card-left { display:flex; flex-direction:column; gap:3px; }
-  .st-lead-id   { font-size:12px; font-weight:800; color:var(--accent); font-family:'DM Mono',monospace; }
-  .st-customer  { font-size:13px; font-weight:700; color:var(--text); }
-  .st-meta      { font-size:11px; color:var(--text3); font-weight:600; display:flex; gap:8px; flex-wrap:wrap; }
-  .st-meta-item { display:flex; align-items:center; gap:4px; }
-  .st-meta-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-  .st-progress-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex-shrink:0; }
-  .st-progress-label { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
-  .st-progress-pct   { font-size:18px; font-weight:800; font-family:'DM Mono',monospace; }
-
-  /* Stepper */
-  .st-stepper {
-    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
-    position:relative;
-  }
-  .st-step {
-    display:flex; flex-direction:column; align-items:center; position:relative;
-    padding:0 4px;
-  }
-  .st-step-track {
-    display:flex; align-items:center; width:100%; position:relative; height:28px;
-  }
-  .st-line-l, .st-line-r {
-    flex:1; height:2px; background:var(--border-strong);
-  }
-  .st-step:first-child .st-line-l { background:transparent !important; }
-  .st-step:last-child  .st-line-r { background:transparent !important; }
-  .st-node {
-    width:26px; height:26px; border-radius:50%;
-    background:var(--surface3); border:2px solid var(--border-strong);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--text3); flex-shrink:0; z-index:1; transition:all .2s;
-  }
-  .st-node svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
-  .st-step.st-done .st-node {
-    background:var(--green); border-color:var(--green);
-    color:#fff; box-shadow:0 0 8px rgba(34,217,138,.4);
-  }
-  .st-step.st-done .st-line-l,
-  .st-step.st-done .st-line-r { background:var(--green); }
-  .st-step.st-active .st-node {
-    background:var(--surface3); border-color:var(--accent);
-    color:var(--accent); box-shadow:0 0 10px rgba(255,122,53,.35);
-    animation:st-pulse 2s ease-in-out infinite;
-  }
-  .st-step.st-active .st-line-l { background:var(--green); }
-  @keyframes st-pulse {
-    0%,100%{box-shadow:0 0 10px rgba(255,122,53,.35)}
-    50%{box-shadow:0 0 18px rgba(255,122,53,.6)}
-  }
-  .st-step-detail { margin-top:6px; text-align:center; width:100%; }
-  .st-step-title {
-    font-size:10px; font-weight:700; color:var(--text3);
-    text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  }
-  .st-step.st-done   .st-step-title { color:var(--green); }
-  .st-step.st-active .st-step-title { color:var(--accent); font-weight:800; }
-  .st-step-sub {
-    font-size:10px; color:var(--text3); margin-top:2px;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
-  }
-  .st-step.st-done   .st-step-sub { color:rgba(34,217,138,.8); }
-  .st-step.st-active .st-step-sub { color:var(--amber); }
-
-  .st-empty { color:var(--text2); font-size:13px; text-align:center; padding:3rem 0; }
-
-  @media(max-width:600px){
-    .st-stepper { grid-template-columns:repeat(2,1fr); gap:8px; }
-    .st-step:nth-child(2) .st-line-r,
-    .st-step:nth-child(3) .st-line-l { display:none; }
-  }
-
-  /* ── SALES PIPELINE TRACKER ── */
-  .sp-search-row { display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-  .sp-search-input {
-    flex:1; min-width:180px; background:var(--surface2); border:1px solid var(--border-strong);
-    color:var(--text); border-radius:9px; padding:0.45rem 0.75rem 0.45rem 2.1rem;
-    font-size:12.5px; font-family:inherit; outline:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
-    background-repeat:no-repeat; background-position:9px center;
-    transition:border-color .18s, box-shadow .18s;
-  }
-  .sp-search-input:focus { border-color:var(--border-accent); box-shadow:0 0 0 3px rgba(80,160,255,.12); }
-  .sp-search-input::placeholder { color:var(--text3); }
-  .sp-search-select {
-    background:var(--surface2); border:1px solid var(--border-strong); color:var(--text2);
-    border-radius:9px; padding:0.45rem 0.7rem; font-size:12px; font-family:inherit;
-    outline:none; cursor:pointer; transition:border-color .18s;
-  }
-  .sp-search-select:focus { border-color:var(--border-accent); color:var(--text); }
-  .sp-search-select option { background:var(--surface2); }
-
-  /* summary kpis */
-  .sp-kpis { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-  .sp-kpi {
-    background:var(--surface2); border:1px solid var(--border-strong);
-    border-radius:10px; padding:0.5rem 1rem; display:flex; flex-direction:column; min-width:100px;
-  }
-  .sp-kpi-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--text3); }
-  .sp-kpi-val   { font-size:24px; font-weight:800; font-family:'DM Mono',monospace; line-height:1.2; }
-  .sp-kpi.spk1 .sp-kpi-val { color:var(--text); }
-  .sp-kpi.spk2 .sp-kpi-val { color:var(--blue); }
-  .sp-kpi.spk3 .sp-kpi-val { color:var(--amber); }
-  .sp-kpi.spk4 .sp-kpi-val { color:var(--green); }
-
-  /* deal card */
-  .sp-card {
-    background:var(--surface2); border:1px solid var(--border);
-    border-radius:var(--radius-lg); padding:1.1rem 1.25rem 1rem;
-    margin-bottom:10px; transition:border-color .2s, box-shadow .2s;
-  }
-  .sp-card:hover { border-color:var(--border-accent); box-shadow:0 4px 22px rgba(0,0,0,.35); }
-  .sp-card-top {
-    display:flex; align-items:flex-start; justify-content:space-between;
-    gap:10px; flex-wrap:wrap; margin-bottom:14px;
-  }
-  .sp-card-left { display:flex; flex-direction:column; gap:3px; }
-  .sp-lead-id   { font-size:13px; font-weight:800; color:var(--accent); font-family:'DM Mono',monospace; }
-  .sp-customer  { font-size:13px; font-weight:700; color:var(--text); }
-  .sp-meta      { font-size:11px; color:var(--text3); font-weight:600; display:flex; gap:8px; flex-wrap:wrap; }
-  .sp-meta-item { display:flex; align-items:center; gap:4px; }
-  .sp-meta-dot  { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-  .sp-progress-wrap { display:flex; flex-direction:column; align-items:flex-end; gap:2px; }
-  .sp-progress-label { font-size:10px; color:var(--text3); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
-  .sp-progress-pct   { font-size:18px; font-weight:800; font-family:'DM Mono',monospace; }
-
-  /* 4-phase stepper */
-  .sp-stepper {
-    display:grid; grid-template-columns:repeat(4,1fr);
-    gap:0; position:relative;
-  }
-  .sp-phase {
-    display:flex; flex-direction:column; align-items:center;
-    position:relative;
-  }
-  /* horizontal connector line between phases */
-  .sp-phase-track {
-    display:flex; align-items:center; width:100%; position:relative; height:28px;
-  }
-  .sp-phase-line-l, .sp-phase-line-r {
-    flex:1; height:2px; background:var(--surface4); transition:background .4s;
-  }
-  .sp-phase:first-child .sp-phase-line-l { background:transparent !important; }
-  .sp-phase:last-child  .sp-phase-line-r { background:transparent !important; }
-
-  .sp-phase-node {
-    width:28px; height:28px; border-radius:50%; flex-shrink:0;
-    border:2px solid var(--surface4); background:var(--surface3);
-    display:flex; align-items:center; justify-content:center;
-    position:relative; z-index:1; transition:all .3s;
-    font-size:11px; font-weight:700; color:var(--text3);
-  }
-  .sp-phase-node svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
-
-  /* states */
-  .sp-phase.sp-done .sp-phase-node {
-    background:var(--green); border-color:var(--green); color:#fff;
-    box-shadow:0 0 10px rgba(34,217,138,.50);
-  }
-  .sp-phase.sp-done .sp-phase-line-l,
-  .sp-phase.sp-done .sp-phase-line-r { background:var(--green); }
-  .sp-phase.sp-active .sp-phase-node {
-    background:var(--accent); border-color:var(--accent); color:#fff;
-    box-shadow:0 0 14px rgba(255,122,53,.70);
-    animation:sp-pulse 2s ease-in-out infinite;
-  }
-  .sp-phase.sp-active .sp-phase-line-l { background:var(--green); }
-  @keyframes sp-pulse {
-    0%,100%{ box-shadow:0 0 10px rgba(255,122,53,.70); }
-    50%{ box-shadow:0 0 24px rgba(255,122,53,1.0); }
-  }
-  .sp-phase.sp-partial .sp-phase-node {
-    background:var(--amber); border-color:var(--amber); color:#fff;
-    box-shadow:0 0 10px rgba(245,176,48,.50);
-  }
-  .sp-phase.sp-partial .sp-phase-line-l { background:var(--green); }
-
-  /* sub-steps inside a phase */
-  .sp-phase-detail {
-    margin-top:8px; width:100%; display:flex; flex-direction:column; align-items:center; gap:3px;
-  }
-  .sp-phase-title {
-    font-size:10.5px; font-weight:700; color:var(--text3); text-align:center; line-height:1.3;
-    transition:color .3s;
-  }
-  .sp-phase.sp-done   .sp-phase-title { color:var(--green); }
-  .sp-phase.sp-active .sp-phase-title { color:var(--accent); font-weight:800; }
-  .sp-phase.sp-partial .sp-phase-title { color:var(--amber); }
-
-  .sp-sub-steps { display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; }
-  .sp-sub-step {
-    font-size:9.5px; font-weight:600; color:var(--text3); background:var(--surface3);
-    border:1px solid var(--border); border-radius:4px; padding:1px 6px;
-    text-align:center; width:90%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    transition:all .3s;
-  }
-  .sp-sub-step.ss-done    { background:rgba(61,186,128,.15); border-color:rgba(61,186,128,.35); color:var(--green); }
-  .sp-sub-step.ss-active  { background:rgba(224,112,64,.15); border-color:rgba(224,112,64,.40); color:var(--accent); font-weight:700; }
-  .sp-sub-step.ss-partial { background:rgba(212,160,48,.15); border-color:rgba(212,160,48,.35); color:var(--amber); }
-
-  .sp-empty { color:var(--text2); font-size:13px; text-align:center; padding:3rem 0; }
-
-  @media(max-width:700px){
-    .sp-stepper { grid-template-columns:repeat(2,1fr); gap:8px; }
-    .sp-phase:nth-child(2) .sp-phase-line-r,
-    .sp-phase:nth-child(3) .sp-phase-line-l { display:none; }
-    .sp-kpis { gap:7px; }
-    .sp-kpi  { min-width:80px; }
-    .sp-kpi-val { font-size:20px; }
-  }
 </style>
 </head>
 <body>
@@ -552,23 +302,7 @@
   <div class="loader-box">
     <div class="spinner"></div>
     <div class="loader-title">Loading dashboard…</div>
-    <div class="loader-sub" id="load-msg">Reading Excel file…</div>
-  </div>
-</div>
-
-<!-- UPLOAD SCREEN -->
-<div id="upload-screen" style="position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);z-index:98;padding:2rem;">
-  <div style="width:min(480px,90vw);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:2.5rem 2rem;text-align:center;">
-    <div style="font-size:36px;margin-bottom:1rem;">📊</div>
-    <div style="font-size:17px;font-weight:700;margin-bottom:0.5rem;color:var(--text);">Load Your Excel File</div>
-    <div style="font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.6;">Upload your <strong style="color:var(--text)">New.xlsx</strong> (or any file with Travel, LEAD, PR, PO sheets) to populate the dashboard.</div>
-    <label for="xlsx-upload" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:white;border:none;border-radius:8px;padding:0.7rem 1.6rem;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 0 20px rgba(255,122,53,0.40);transition:all 0.2s;">
-      <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:white;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Choose Excel File (.xlsx)
-    </label>
-    <input type="file" id="xlsx-upload" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(this)">
-    <div style="margin-top:1.2rem;font-size:11px;color:var(--text3);">Required sheets: <strong>Travel</strong>, <strong>LEAD</strong>, <strong>PR</strong>, <strong>PO</strong></div>
-    <div id="upload-error" style="margin-top:1rem;font-size:12px;color:var(--red);display:none;"></div>
+    <div class="loader-sub" id="load-msg">Fetching latest data from Google Sheets</div>
   </div>
 </div>
 
@@ -577,10 +311,10 @@
   <div class="error-box">
     <div class="error-icon">⚠️</div>
     <div class="error-title">Could not load data</div>
-    <div class="error-msg" id="error-msg">Please upload a valid Excel file with Travel, LEAD, PR, and PO sheets.</div>
-    <button class="retry-btn" onclick="showUpload()">
-      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Upload File
+    <div class="error-msg" id="error-msg">Make sure the Google Sheet is published to the web (File → Share → Publish to web → Each sheet as CSV).</div>
+    <button class="retry-btn" onclick="loadAll()">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:white;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+      Retry
     </button>
   </div>
 </div>
@@ -599,11 +333,14 @@
     <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;" id="file-info">—</div>
     <div class="topbar-right">
       <div class="hbtn"><div class="live-dot"></div>&nbsp;Live</div>
-      <label for="xlsx-upload-top" class="hbtn" style="cursor:pointer;">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Load File
-      </label>
-      <input type="file" id="xlsx-upload-top" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(this)">
+      <button class="hbtn" onclick="loadAll()">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.54"/></svg>
+        Refresh
+      </button>
+      <a class="hbtn" href="https://docs.google.com/spreadsheets/d/15_QW2QSF2BqrsQC5SZFU8GjI_mOBorto/edit" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open Sheet
+      </a>
     </div>
   </div>
 
@@ -657,8 +394,8 @@
       <option value="COMPLETED">Completed</option>
       <option value="25% COMPLETED">25% Completed</option>
       <option value="50% COMPLETED">50% Completed</option>
-      <option value="75% COMPLETED">75% Completed</option>
-      <option value="YET TO START">Yet to Start</option>
+      <option value="75% OVER">75% Over</option>
+      <option value="YTS">Yet to Start (YTS)</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -672,7 +409,7 @@
         Lead pipeline
       </div>
       <div id="pipeline-bars"></div>
-      <div class="chart-wrap"><div id="pipeChart" style="max-width:170px;"></div></div>
+      <div class="chart-wrap"><canvas id="pipeChart" role="img" aria-label="Donut chart of lead pipeline stages"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title">
@@ -726,8 +463,8 @@
         <option value="COMPLETED">Completed</option>
         <option value="25% COMPLETED">25% Completed</option>
         <option value="50% COMPLETED">50% Completed</option>
-        <option value="75% COMPLETED">75% Completed</option>
-        <option value="YET TO START">Yet to Start</option>
+        <option value="75% OVER">75% Over</option>
+        <option value="YTS">Yet to Start (YTS)</option>
       </select>
     </div>
     <table class="data-table">
@@ -743,158 +480,86 @@
     <span class="row-count" id="po-count"></span>
   </div>
 
-
-  <!-- SALES PIPELINE TRACKER -->
-  <div class="card section-gap">
-    <div class="card-title">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Sales Pipeline Tracker
-    </div>
-
-    <!-- KPIs -->
-    <div class="sp-kpis">
-      <div class="sp-kpi spk1"><div class="sp-kpi-label">Total Deals</div><div class="sp-kpi-val" id="sp-total">—</div></div>
-      <div class="sp-kpi spk2"><div class="sp-kpi-label">In Progress</div><div class="sp-kpi-val" id="sp-inprog">—</div></div>
-      <div class="sp-kpi spk3"><div class="sp-kpi-label">At PR Stage</div><div class="sp-kpi-val" id="sp-atpr">—</div></div>
-      <div class="sp-kpi spk4"><div class="sp-kpi-label">At PO Stage</div><div class="sp-kpi-val" id="sp-atpo">—</div></div>
-    </div>
-
-    <!-- Search + filter -->
-    <div class="sp-search-row">
-      <input class="sp-search-input" type="text" id="sp-search" placeholder="Search lead, customer, PR No…" oninput="renderSalesPipeline()">
-      <select class="sp-search-select" id="sp-stage-filter" onchange="renderSalesPipeline()">
-        <option value="">All stages</option>
-        <option value="travel">Travel</option>
-        <option value="lead">Lead</option>
-        <option value="pr">PR</option>
-        <option value="po">PO</option>
-      </select>
-    </div>
-
-    <div id="sp-cards-list"></div>
-  </div>
-
   <div class="footer" id="footer-ts">—</div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════
-//  CONFIG — Excel file upload mode
+//  CONFIG
 // ══════════════════════════════════════════════════════
+const SHEET_ID = '15_QW2QSF2BqrsQC5SZFU8GjI_mOBorto';
 const TABS = { travel:'Travel', lead:'LEAD', pr:'PR', po:'PO' };
 // ══════════════════════════════════════════════════════
 
+let chartInstance = null;
 let _data = { aLeads:[], aPRs:[], aPOs:[], aVisits:[] };
 let _sort = { pr:{col:null,dir:1}, po:{col:null,dir:1} };
 
-function showUpload() {
-  hide('loading-screen'); hide('error-screen'); hide('dashboard');
-  document.getElementById('upload-screen').style.display = 'flex';
+function csvUrl(tabName) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
 }
 
-function xlsxSheetToRows(wb, sheetName) {
-  const ws = wb.Sheets[sheetName];
-  if (!ws) return [];
-  const rows = XLSX.utils.sheet_to_json(ws, { defval: null, raw: false });
-  return rows;
+async function fetchTab(tabName) {
+  const resp = await fetch(csvUrl(tabName));
+  if (!resp.ok) throw new Error(`HTTP ${resp.status} for tab "${tabName}"`);
+  return parseCSV(await resp.text());
 }
 
-function handleFileUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-  document.getElementById('upload-screen').style.display = 'none';
-  show('loading-screen', 'Reading ' + file.name + '…');
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, { type: 'array', cellDates: false });
-      const missing = Object.values(TABS).filter(t => !wb.SheetNames.includes(t));
-      if (missing.length) {
-        throw new Error('Missing sheets: ' + missing.join(', ') + '. Found: ' + wb.SheetNames.join(', '));
-      }
-      const travels = xlsxSheetToRows(wb, TABS.travel);
-      const leads   = xlsxSheetToRows(wb, TABS.lead);
-      const prs     = xlsxSheetToRows(wb, TABS.pr);
-      const pos     = xlsxSheetToRows(wb, TABS.po);
-      renderDashboard({travels, leads, prs, pos, fileName: file.name});
-    } catch(e) {
-      console.error(e);
-      hide('loading-screen');
-      document.getElementById('error-msg').textContent = e.message;
-      document.getElementById('error-screen').classList.add('show');
-    }
-  };
-  reader.onerror = function() {
-    hide('loading-screen');
-    document.getElementById('error-msg').textContent = 'Failed to read file.';
-    document.getElementById('error-screen').classList.add('show');
-  };
-  reader.readAsArrayBuffer(file);
+function parseCSV(text) {
+  const lines=[]; let cur='', inQ=false, row=[];
+  for (let i=0;i<text.length;i++) {
+    const c=text[i];
+    if (c==='"') { if(inQ&&text[i+1]==='"'){cur+='"';i++;}else inQ=!inQ; }
+    else if (c===','&&!inQ) { row.push(cur.trim());cur=''; }
+    else if ((c==='\n'||c==='\r')&&!inQ) { if(c==='\r'&&text[i+1]==='\n')i++; row.push(cur.trim());cur='';lines.push(row);row=[]; }
+    else cur+=c;
+  }
+  if (cur||row.length){row.push(cur.trim());lines.push(row);}
+  if (lines.length<2) return [];
+  const headers=lines[0].map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.slice(1).filter(r=>r.some(c=>c!=='')).map(r=>{
+    const obj={};
+    headers.forEach((h,i)=>{obj[h]=(r[i]||'').replace(/^"|"$/g,'').trim()||null;});
+    return obj;
+  });
 }
 
-// ── EMBEDDED DATA FROM New.xlsx ──
-const _EMBEDDED = {"Travel": [{"Schedule Date": "2026-04-06", "Plant Name Location": "Cemros group(Head office)", "Appointment Status": "Fixed", "Date of Entry": "2026-04-06", "Meeting Person and Designation": "Sergey", "Exit Time": null, "Q Form Status": "Not Prepared", "VISIT Discription": "Discussed  about the future supply,they have some PR they will send us ,we have received one PR", "Lead No": "VST-2026-01-PS"}, {"Schedule Date": "2026-04-07", "Plant Name Location": "Cement", "Appointment Status": "Fixed", "Date of Entry": "2026-04-07", "Meeting Person and Designation": "Maxim", "Exit Time": null, "Q Form Status": "Not Prepared", "VISIT Discription": "Inspection  services has been postponed ,so we want create a new contract ,they said there is more PR for future  they will send us all the list", "Lead No": "VST-2026-02-PS"}, {"Schedule Date": "2026-04-09", "Plant Name Location": "Sebryakov cement", "Appointment Status": "Fixed", "Date of Entry": "2026-04-09", "Meeting Person and Designation": "Petchanin", "Exit Time": null, "Q Form Status": "Not Prepared", "VISIT Discription": "we have received the PR for mill Hydraulics", "Lead No": "VST-2026-03-PS"}, {"Schedule Date": "2026-04-15", "Plant Name Location": "Verkhnibakansky", "Appointment Status": "Fixed", "Date of Entry": "2026-04-15", "Meeting Person and Designation": null, "Exit Time": null, "Q Form Status": "Not Prepared", "VISIT Discription": "They will send us the purchase request in the third week of May.", "Lead No": "VST-2026-04-PS"}], "LEAD": [{"Lead No": "VST-2026-01-PS", "Lead Generated Date": "2026-04-06", "Plant Name and Location": "Cemros group(Head office),Russia", "Scope in Lead": "We are waiting for PR,We already received one PR", "Expecting PR Date": null, "Followup Date 1": "2026-04-17", "Followup Remark 1": "we have send the quotation", "Followup Date 2": "2026-04-27", "Followup Remark 2": "For this we gave a rimendier mail to them for purchase the product", "Followup Date 3": null, "Followup Remark 3": null, "Followup Date 4": null, "Followup Remark 4": null, "Followup Date 5": null, "Followup Remark 5": null, "Purchase Request Status": null, "Internal PR No": "VST-2026-PR01", "Customer Name": "Imirnov Sergayvich", "Contact Details": "Cemros group(Head office),Russia", "Mail ID": "imironov@cemros.ru", "Month": "Apr", "Lead Status": "PR Received"}, {"Lead No": "VST-2026-02-PS", "Lead Generated Date": "2026-04-07", "Plant Name and Location": "Cementum(Head office),Russia", "Scope in Lead": "we are waiting for PR ,they will send us", "Expecting PR Date": null, "Followup Date 1": null, "Followup Remark 1": null, "Followup Date 2": null, "Followup Remark 2": null, "Followup Date 3": null, "Followup Remark 3": null, "Followup Date 4": null, "Followup Remark 4": null, "Followup Date 5": null, "Followup Remark 5": null, "Purchase Request Status": null, "Internal PR No": "VST-2026-PR02", "Customer Name": "Maxim", "Contact Details": "Cementum(Head office),Russia", "Mail ID": null, "Month": "Apr", "Lead Status": "PR Processed"}, {"Lead No": "VST-2026-03-PS", "Lead Generated Date": "2026-04-08", "Plant Name and Location": "Sebryakov cement,Russia", "Scope in Lead": "we have received the PR", "Expecting PR Date": null, "Followup Date 1": "2026-04-10", "Followup Remark 1": "we got PR for this,we need to send the quotation", "Followup Date 2": "2026-04-27", "Followup Remark 2": "we have send the quotation ,we are waiting for PO", "Followup Date 3": null, "Followup Remark 3": null, "Followup Date 4": null, "Followup Remark 4": null, "Followup Date 5": null, "Followup Remark 5": null, "Purchase Request Status": null, "Internal PR No": "VST-2026-PR03", "Customer Name": "Petchanin", "Contact Details": "Sebryakov cement,Russia", "Mail ID": "Petchanin@sebcement.ru", "Month": "Apr", "Lead Status": "Accepted"}, {"Lead No": "VST-2026-04-PS", "Lead Generated Date": "2026-04-09", "Plant Name and Location": "Verkhnibakansky", "Scope in Lead": "We are waiting for PR ,we will expect on thrid week of May", "Expecting PR Date": null, "Followup Date 1": null, "Followup Remark 1": null, "Followup Date 2": null, "Followup Remark 2": null, "Followup Date 3": null, "Followup Remark 3": null, "Followup Date 4": null, "Followup Remark 4": null, "Followup Date 5": null, "Followup Remark 5": null, "Purchase Request Status": null, "Internal PR No": "VST-2026-PR04", "Customer Name": "Albert", "Contact Details": "Verkhnibaknksy", "Mail ID": null, "Month": "Apr", "Lead Status": "Rejected"}], "PR": [{"PR Date": "2026-04-08", "Customer PR No": null, "Internal PR No": "VST-2026-PR01", "PR Description": "Bearing Deep Groove ball", "Customer Name": "P.T Semen Grobogan ,Indonesia", "Contact Person": "Radchenko Aleksandra", "Transfer to Design Team": "NOT TRANSFERRED", "Acknowledge by Design Team": "NOT IN SCOPE", "Outsourcing Status": "NO NEED", "Outsourcing No": null, "Outsourcing Date": null, "Packing H": null, "Packing W": null, "Packing L": null, "Weight KG": null, "Box": "CARD BOARD", "Quotation Date": "2026-04-08", "Quotation Number": "VST-138-2027", "Quotation Status": "SUBMITTED", "Date of Submission": "2026-04-08"}, {"PR Date": "2026-04-08", "Customer PR No": null, "Internal PR No": "VST-2026-PR02", "PR Description": "MPS5000 B raw mill", "Customer Name": "Cemros(Serbryansky cement )", "Contact Person": "Imirnov Sergeyvich", "Transfer to Design Team": "TRANSFERRED", "Acknowledge by Design Team": "IN REVIEW", "Outsourcing Status": "PR RAISED", "Outsourcing No": null, "Outsourcing Date": null, "Packing H": null, "Packing W": null, "Packing L": null, "Weight KG": null, "Box": "WOODEN BOARD", "Quotation Date": "2026-04-16", "Quotation Number": "VST-138-2028", "Quotation Status": "NOT SUBMITTED", "Date of Submission": "2026-04-16"}, {"PR Date": "2026-04-10", "Customer PR No": "RF NO:36", "Internal PR No": "VST-2026-PR03", "PR Description": "Spares parts for Raw Materials", "Customer Name": "Sebryakov cement,Russia", "Contact Person": "Petchanin", "Transfer to Design Team": "NOT TRANSFERRED", "Acknowledge by Design Team": "NOT IN SCOPE", "Outsourcing Status": "NO NEED", "Outsourcing No": null, "Outsourcing Date": null, "Packing H": null, "Packing W": null, "Packing L": null, "Weight KG": null, "Box": "WOODEN BOARD", "Quotation Date": "2026-04-27", "Quotation Number": "VST-139-2026", "Quotation Status": "SUBMITTED", "Date of Submission": "2026-04-27"}, {"PR Date": "2026-04-16", "Customer PR No": null, "Internal PR No": "VST-2026-PR04", "PR Description": "Celsa inspection quotation", "Customer Name": "Celsa cement plant", "Contact Person": "Radchenko Aleksandra", "Transfer to Design Team": "NOT IN SCOPE", "Acknowledge by Design Team": "NOT IN SCOPE", "Outsourcing Status": "NO NEED", "Outsourcing No": null, "Outsourcing Date": null, "Packing H": null, "Packing W": null, "Packing L": null, "Weight KG": null, "Box": "CARD BOARD", "Quotation Date": "2026-04-16", "Quotation Number": "VST-138-2029", "Quotation Status": "NOT SUBMITTED", "Date of Submission": "2026-04-16"}], "PO": [{"Date": "2026-01-23", "Customer Name": "SINAR TAMBANG ARTHALESTARI", "Contact Person": "Ergan Senza - ergan.senza@semenbima.com", "Internal PR": "VST-2026-PR01", "Origin Certificate": "GOING TO PROCESS", "PO Number": "VST-2026-PO01", "Production Stage": "75% COMPLETED", "QC Certificate": "SUBMITTED", "Re Cargo Quote": "RECEIVED", "Re Packing Details": "RECEIVED", "Short Description": "blade& filter items", "Work Order Status": "RELEASED"}, {"Date": "2026-03-09", "Customer Name": "From Vishak tech to Partnership", "Contact Person": null, "Internal PR": "VST-2026-PR02", "Origin Certificate": "RECEIVED", "PO Number": "VST-2026-PO02", "Production Stage": "PROCESSING", "QC Certificate": "NOT SUBMITTED", "Re Cargo Quote": "NOT RECEIVED", "Re Packing Details": null, "Short Description": "Hydraulic cylinder & Motion sensor for the cylinder", "Work Order Status": "NOT RELEASED"}, {"Date": "2025-09-16", "Customer Name": "Heidelberg cement (cesla)", "Contact Person": "salnikov Andrey (Moscow)", "Internal PR": "VST-2026-PR03", "Origin Certificate": "RECEIVED", "PO Number": "VST-2026-PO03", "Production Stage": "COMPLETED", "QC Certificate": "SUBMITTED", "Re Cargo Quote": "RECEIVED", "Re Packing Details": "RECEIVED", "Short Description": "Machinery Spares(IKN parts )", "Work Order Status": "RELEASED"}, {"Date": "2026-01-21", "Customer Name": "Cementum volga", "Contact Person": "Irina Shchetinina,Maxim Pinkalskiy", "Internal PR": "VST-2026-PR04", "Origin Certificate": "GOING TO PROCESS", "PO Number": "VST-2026-PO04", "Production Stage": "50% COMPLETED", "QC Certificate": "NOT SUBMITTED", "Re Cargo Quote": "NOT RECEIVED", "Re Packing Details": "RECEIVED", "Short Description": "Machinery Spars", "Work Order Status": "NOT RELEASED"}, {"Date": "2025-11-05", "Customer Name": "Heidelberg cement", "Contact Person": "salnikov Andery (Moscow)", "Internal PR": "VST-2026-PR05", "Origin Certificate": "GOING TO PROCESS", "PO Number": "VST-2026-PO05", "Production Stage": "YET TO START", "QC Certificate": "SUBMITTED", "Re Cargo Quote": "RECEIVED", "Re Packing Details": "RECEIVED", "Short Description": "Hydraulic hose with fittings", "Work Order Status": "RELEASED"}]};
-
-function loadAll() {
+async function loadAll() {
+  show('loading-screen','Fetching latest data from Google Sheets…');
+  hide('error-screen'); hide('dashboard');
   try {
-    renderDashboard({
-      travels: _EMBEDDED['Travel'],
-      leads:   _EMBEDDED['LEAD'],
-      prs:     _EMBEDDED['PR'],
-      pos:     _EMBEDDED['PO'],
-      fileName: 'New.xlsx'
-    });
+    const [travels,leads,prs,pos] = await Promise.all([
+      fetchTab(TABS.travel), fetchTab(TABS.lead), fetchTab(TABS.pr), fetchTab(TABS.po)
+    ]);
+    renderDashboard({travels,leads,prs,pos});
   } catch(e) {
-    console.error('renderDashboard failed:', e);
-    var ls = document.getElementById('loading-screen');
-    if (ls) ls.style.display = 'none';
-    var em = document.getElementById('error-msg');
-    if (em) em.textContent = 'Dashboard error: ' + e.message;
-    var es = document.getElementById('error-screen');
-    if (es) { es.style.display = 'flex'; es.classList.add('show'); }
+    console.error(e);
+    hide('loading-screen');
+    document.getElementById('error-msg').textContent =
+      `${e.message}. Make sure the sheet is published: File → Share → Publish to web → Each tab as CSV.`;
+    document.getElementById('error-screen').classList.add('show');
   }
 }
 
 // ── COLOUR HELPERS ──
-const STATUS_COLORS = {'new':{fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},'follow up':{fill:'#f59e0b',bar:'#f59e0b',pill:'pill-follow'},'qualified':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'proposal sent':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'closed won':{fill:'#06d6a0',bar:'#06d6a0',pill:'pill-won'},'closed lost':{fill:'#ef4444',bar:'#ef4444',pill:'pill-notsent'},'negotiation':{fill:'#f97316',bar:'#f97316',pill:'pill-follow'},'contacted':{fill:'#38bdf8',bar:'#38bdf8',pill:'pill-new'},'pr received':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'pr processed':{fill:'#60a5fa',bar:'#60a5fa',pill:'pill-new'},'accepted':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'rejected':{fill:'#f43f5e',bar:'#f43f5e',pill:'pill-notsent'}};
+const STATUS_COLORS = {'new':{fill:'#4a8fd4',bar:'#4a8fd4',pill:'pill-new'},'follow up':{fill:'#f59e0b',bar:'#f59e0b',pill:'pill-follow'},'qualified':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'proposal sent':{fill:'#a78bfa',bar:'#a78bfa',pill:'pill-prop'},'closed won':{fill:'#06d6a0',bar:'#06d6a0',pill:'pill-won'},'closed lost':{fill:'#ef4444',bar:'#ef4444',pill:'pill-notsent'},'negotiation':{fill:'#f97316',bar:'#f97316',pill:'pill-follow'},'contacted':{fill:'#38bdf8',bar:'#38bdf8',pill:'pill-new'},'pr received':{fill:'#34d399',bar:'#34d399',pill:'pill-qual'},'pr processed':{fill:'#60a5fa',bar:'#60a5fa',pill:'pill-new'},'accepted':{fill:'#10b981',bar:'#10b981',pill:'pill-qual'},'rejected':{fill:'#f43f5e',bar:'#f43f5e',pill:'pill-notsent'}};
 const _dynColors=['#4a8fd4','#f59e0b','#10b981','#a78bfa','#f97316','#38bdf8','#e879f9','#06d6a0','#fb923c','#34d399','#818cf8','#f43f5e'];
 const _dynMap={};let _dynIdx=0;
 function si(s){const k=String(s||'').toLowerCase().trim();if(STATUS_COLORS[k])return STATUS_COLORS[k];if(!_dynMap[k]){_dynMap[k]=_dynColors[_dynIdx%_dynColors.length];_dynIdx++;}const c=_dynMap[k];return{fill:c,bar:c,pill:'pill-default'};}
 function pillPR(s){const v=String(s||'').toLowerCase().trim();if(v==='submitted')return'pill-sent';if(v==='not submitted')return'pill-notsent';return'pill-default';}
-function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yet to start')return'pill-yet-to-start';return'pill-default';}
-function fmtDate(v){
-  if(!v)return'—';
-  let s=String(v).trim();
-  // Excel DD/MM/YYYY exported via Google Sheets — always treat as day/month/year
-  const slash=/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
-  if(slash) s=slash[3]+'-'+slash[2].padStart(2,'0')+'-'+slash[1].padStart(2,'0');
-  // DD-MM-YYYY
-  const dash=/^(\d{1,2})\-(\d{1,2})\-(\d{4})$/.exec(s);
-  if(dash) s=dash[3]+'-'+dash[2].padStart(2,'0')+'-'+dash[1].padStart(2,'0');
-  const d=new Date(s);
-  return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-}
+function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yts')return'pill-yts';return'pill-default';}
+function fmtDate(v){if(!v)return'—';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
 
-function renderDashboard({travels, leads, prs, pos, fileName}) {
-  const nv = v => (v === null || v === undefined || String(v).trim() === '' || String(v).trim() === 'null') ? null : String(v).trim();
+function renderDashboard({travels,leads,prs,pos}) {
+  _data.aLeads  = leads.filter(r=>r['Lead No']);
+  _data.aPRs    = prs.filter(r=>r['Internal PR No']);
+  _data.aPOs    = pos.filter(r=>r['Customer Name']&&r['Production Stage']&&String(r['Customer Name']).length>2&&String(r['Production Stage']).length>0&&!String(r['Customer Name']).toLowerCase().includes('grand total')&&!String(r['Customer Name']).toLowerCase().includes('production stage'));
+  _data.aVisits = travels.filter(r=>r['Lead No']);
 
-  _data.aLeads  = leads.map(r => { const o={}; Object.keys(r).forEach(k=>o[k]=nv(r[k])); return o; }).filter(r=>r['Lead No']);
-  _data.aPRs    = prs.map(r  => { const o={}; Object.keys(r).forEach(k=>o[k]=nv(r[k])); return o; }).filter(r=>r['Internal PR No']);
-  _data.aPOs    = pos.map(r  => { const o={}; Object.keys(r).forEach(k=>o[k]=nv(r[k])); return o; })
-    .filter(r=>r['Customer Name']&&r['Production Stage']&&String(r['Customer Name']).length>2&&!String(r['Customer Name']).toLowerCase().includes('grand total')&&!String(r['Customer Name']).toLowerCase().includes('production stage'));
-  _data.aVisits = travels.map(r => { const o={}; Object.keys(r).forEach(k=>o[k]=nv(r[k])); return o; }).filter(r=>r['Lead No']);
-
-  // Build Internal PR No → Lead No map for PO joining
-  const prNoToLeadNo = {};
-  _data.aLeads.forEach(r => { if(r['Internal PR No']) prNoToLeadNo[r['Internal PR No']] = r['Lead No']; });
-  _data.aPRs.forEach(r => { if(r['Internal PR No']) prNoToLeadNo[r['Internal PR No']] = r['Internal PR No']; });
-  _data._prNoToLeadNo = prNoToLeadNo;
-
-  // Hide publish notice (only relevant for Google Sheets mode)
-  document.getElementById('publish-notice').classList.remove('show');
+  const anyEmpty=[_data.aLeads,_data.aPRs,_data.aPOs,_data.aVisits].some(a=>a.length===0);
+  document.getElementById('publish-notice').classList.toggle('show',anyEmpty);
 
   set('kpi-leads',_data.aLeads.length);
   set('kpi-prs',_data.aPRs.length);
@@ -914,7 +579,7 @@ function renderDashboard({travels, leads, prs, pos, fileName}) {
     'negotiation':'#f97316',
     'qualified':'#22c55e',
     'proposal sent':'#a78bfa',
-    'pr received':'#a78bfa',
+    'pr received':'#06b6d4',
     'pr processed':'#0ea5e9',
     'accepted':'#10b981',
     'closed won':'#16a34a',
@@ -931,52 +596,43 @@ function renderDashboard({travels, leads, prs, pos, fileName}) {
   });
 
   renderPipeline();
-  renderVisits(); renderPRs(); renderPOs(); renderSalesPipeline();
+  renderVisits(); renderPRs(); renderPOs();
 
   const now=new Date().toLocaleString();
-  set('file-info', (fileName||'Excel file') + ' · loaded ' + now);
-  set('footer-ts','Excel data · Last loaded: ' + now);
+  set('file-info',`Google Sheets · refreshed ${now}`);
+  set('footer-ts',`Live data · Last refreshed: ${now} · Auto-refresh every 5 min`);
 
-  var ls2 = document.getElementById('loading-screen');
-  if (ls2) ls2.style.display = 'none';
-  var us = document.getElementById('upload-screen');
-  if (us) us.style.display = 'none';
+  hide('loading-screen');
   const dash=document.getElementById('dashboard');
-  if (dash) { dash.style.display='block'; dash.classList.add('visible'); }
+  dash.style.display='block'; dash.classList.add('visible');
+  clearTimeout(window._refreshTimer);
+  window._refreshTimer=setTimeout(loadAll,5*60*1000);
 }
 
 function renderPipeline() {
   const gls=(document.getElementById('filter-lead-status')||{}).value||'';
   const filteredLeads=gls?_data.aLeads.filter(r=>String(r['Lead Status']||'Unknown').trim()===gls):_data.aLeads;
 
+  // Pipeline bars + chart
   const sc={};
   filteredLeads.forEach(r=>{const s=String(r['Lead Status']||'Unknown').trim();sc[s]=(sc[s]||0)+1;});
   const maxV=Math.max(...Object.values(sc),1);
   const scEntries=Object.entries(sc);
   const colorOf=s=>(_data.statusColorMap&&_data.statusColorMap[s])||'#64748b';
-
   set('pipeline-bars',scEntries.map(([s,n])=>{
     const col=colorOf(s);
     const pct=Math.round(n/maxV*100);
     return `<div class="pipe-row"><div class="pipe-dot" style="background:${col}"></div><span class="pipe-label" style="color:${col}">${s}</span><div class="pipe-track"><div class="pipe-fill" style="width:${pct}%;background:linear-gradient(90deg,${col}99,${col})"></div></div><span class="pipe-n" style="color:${col}">${n}</span></div>`;
   }).join('')||'<div class="empty">No lead data</div>');
 
-  // SVG donut — no Chart.js needed
-  const total=scEntries.reduce((a,[,n])=>a+n,0);
-  const R=60,cx=80,cy=80,stroke=22;
-  const circ=2*Math.PI*R;
-  let offset=0;
-  const slices=scEntries.map(([s,n])=>{
-    const col=colorOf(s);
-    const dash=circ*(n/total);
-    const slice=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-dasharray="${dash.toFixed(2)} ${(circ-dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
-    offset+=dash;
-    return slice;
-  }).join('');
-  const legend=scEntries.map(([s,n])=>`<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#8baad4"><span style="width:8px;height:8px;border-radius:50%;background:${colorOf(s)};flex-shrink:0;display:inline-block"></span>${s} <span style="color:${colorOf(s)};font-weight:700">${n}</span></div>`).join('');
-  const donut=total?`<svg viewBox="0 0 160 160" style="width:140px;height:140px">${slices}<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="#eef4ff" font-size="22" font-weight="800">${total}</text></svg>`:'';
-  const wrap=document.getElementById('pipeChart');
-  if(wrap){wrap.style.display='flex';wrap.style.flexDirection='column';wrap.style.alignItems='center';wrap.style.gap='10px';wrap.innerHTML=donut+`<div style="display:flex;flex-direction:column;gap:4px;width:100%">${legend}</div>`;}
+  if(chartInstance){chartInstance.destroy();chartInstance=null;}
+  if(scEntries.length){
+    chartInstance=new Chart(document.getElementById('pipeChart'),{
+      type:'doughnut',
+      data:{labels:scEntries.map(([s])=>s),datasets:[{data:scEntries.map(([,n])=>n),backgroundColor:scEntries.map(([s])=>colorOf(s)),borderWidth:2,borderColor:'#1e2720'}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{color:'#8ab49a',font:{size:11,family:'DM Sans'},padding:8,boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}}}}
+    });
+  }
 } // end renderPipeline
 
 function renderVisits() {
@@ -1044,8 +700,8 @@ function renderPOs() {
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
     if(activeFilter){
-      const stage=String(r['Production Stage']||'').trim().toUpperCase();
-      if(stage!==activeFilter.toUpperCase()) return false;
+      const stage=String(r['Production Stage']||'').trim();
+      if(stage!==activeFilter) return false;
     }
     return true;
   });
@@ -1057,7 +713,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${(()=>{const s=String(r['Production Stage']||'').trim();return s==='YET TO START'?'Yet to Start':s==='75% OVER'?'75% Over':s==='75% COMPLETED'?'75% Completed':s==='50% COMPLETED'?'50% Completed':s==='25% COMPLETED'?'25% Completed':s||'—'})()}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']||'—'}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -1072,7 +728,7 @@ function applyAllFilters() {
   const pof=document.getElementById('po-stage-filter');
   if(gpo&&pof&&gpo.value&&!pof.value) pof.value=gpo.value;
 
-  renderVisits(); renderPRs(); renderPOs(); renderPipeline(); renderSalesPipeline();
+  renderVisits(); renderPRs(); renderPOs(); renderPipeline();
   const active=[
     document.getElementById('global-search').value,
     document.getElementById('filter-lead-status').value,
@@ -1085,7 +741,7 @@ function applyAllFilters() {
 
 function clearAllFilters() {
   ['global-search','filter-lead-status','filter-pr-status','filter-po-stage',
-   'pr-search','pr-status-filter','po-search','po-stage-filter','visit-search','sp-search','sp-stage-filter'].forEach(id=>{
+   'pr-search','pr-status-filter','po-search','po-stage-filter','visit-search'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   applyAllFilters();
@@ -1103,267 +759,7 @@ function set(id,html){const el=document.getElementById(id);if(el)el.innerHTML=ht
 function show(id,msg){const el=document.getElementById(id);if(el){el.classList.remove('hidden');el.style.display='';if(msg){const m=document.getElementById('load-msg');if(m)m.textContent=msg;}}}
 function hide(id){const el=document.getElementById(id);if(el){el.classList.add('hidden');el.style.display='none';}}
 
-
-function renderSalesPipeline() {
-  const q   = ((document.getElementById('sp-search')||{}).value||'').toLowerCase().trim();
-  const gq  = ((document.getElementById('global-search')||{}).value||'').toLowerCase().trim();
-  const stf = ((document.getElementById('sp-stage-filter')||{}).value||'').toLowerCase().trim();
-
-  // ── 1. Build a deal map keyed by Lead No ──
-  // Each deal: { leadNo, customer, leadStatus, visits[], prs[], pos[], farthestStage }
-  const dealMap = {};
-
-  // Seed from Leads (source of truth for lead no + customer)
-  (_data.aLeads||[]).forEach(r => {
-    const k = (r['Lead No']||'').trim();
-    if (!k) return;
-    dealMap[k] = {
-      leadNo:      k,
-      customer:    r['Plant Name Location'] || r['Customer Name'] || r['Lead No'] || '—',
-      leadStatus:  String(r['Lead Status']||'').trim(),
-      leadDate:    r['Date'] || r['Lead Date'] || '',
-      visits: [], prs: [], pos: [],
-    };
-  });
-
-  // Attach visits (Travel sheet keyed by Lead No)
-  (_data.aVisits||[]).forEach(r => {
-    const k = (r['Lead No']||'').trim();
-    if (dealMap[k]) dealMap[k].visits.push(r);
-    else {
-      // Visit with no lead record — create stub
-      dealMap[k] = {
-        leadNo: k, customer: r['Plant Name Location']||k,
-        leadStatus:'', leadDate:'', visits:[r], prs:[], pos:[],
-      };
-    }
-  });
-
-  // Attach PRs — join by Internal PR No first (from LEAD sheet), then Customer Name fallback
-  const customerToLeadNo = {};
-  Object.values(dealMap).forEach(d => {
-    if (d.customer && d.customer !== '—')
-      customerToLeadNo[d.customer.toLowerCase().trim()] = d.leadNo;
-  });
-  // Internal PR No → Lead No from LEAD sheet
-  const internalPrToLeadNo2 = {};
-  (_data.aLeads||[]).forEach(r => {
-    const pr=(r['Internal PR No']||'').trim(), k=(r['Lead No']||'').trim();
-    if(pr&&k) internalPrToLeadNo2[pr]=k;
-  });
-
-  (_data.aPRs||[]).forEach(r => {
-    const prNo = (r['Internal PR No']||'').trim();
-    const cust = (r['Customer Name']||'').toLowerCase().trim();
-    const k = internalPrToLeadNo2[prNo] || customerToLeadNo[cust];
-    if (k && dealMap[k]) { if(!dealMap[k].prs.find(p=>p['Internal PR No']===prNo)) dealMap[k].prs.push(r); }
-    else if (prNo) {
-      const newKey='PR:'+prNo;
-      dealMap[newKey]=dealMap[newKey]||{leadNo:prNo,customer:r['Customer Name']||prNo,leadStatus:'',leadDate:'',visits:[],prs:[],pos:[]};
-      if(!dealMap[newKey].prs.find(p=>p['Internal PR No']===prNo)) dealMap[newKey].prs.push(r);
-    }
-  });
-
-  // Attach POs — join by Internal PR No matching PR's Internal PR No
-  const prNoToLeadNo = {};
-  Object.values(dealMap).forEach(d => {
-    d.prs.forEach(pr => {
-      const prNo = (pr['Internal PR No']||'').trim();
-      if (prNo) prNoToLeadNo[prNo] = d.leadNo;
-    });
-  });
-  // Also try Customer Name fallback for POs
-  (_data.aPOs||[]).forEach(r => {
-    const prRef  = (r['Internal PR']||r['Internal PR No']||'').trim();
-    const cust   = (r['Customer Name']||'').toLowerCase().trim();
-    const k      = prNoToLeadNo[prRef] || customerToLeadNo[cust];
-    if (k && dealMap[k]) dealMap[k].pos.push(r);
-  });
-
-  // ── 2. Compute farthest stage & progress for each deal ──
-  const PO_STAGE_PCT = {
-    '':0, 'PROCESSING':20, '25% COMPLETED':25,
-    '50% COMPLETED':50, '75% COMPLETED':75, '75% OVER':75,
-    'COMPLETED':100,
-  };
-  function poStagePct(s){ return PO_STAGE_PCT[String(s||'').trim().toUpperCase()] ?? 10; }
-
-  function dealProgress(d) {
-    if (d.pos.length) {
-      const best = Math.max(...d.pos.map(p => poStagePct(p['Production Stage'])));
-      // PO stage → 75–100% of total journey
-      return { stage:'po', pct: 75 + Math.round(best * 0.25) };
-    }
-    if (d.prs.length) {
-      const allSent = d.prs.every(p => {
-        const q = p['Quotation Status']||(p['Remark 3']?'submitted':'');
-        return String(q).toLowerCase().includes('submit');
-      });
-      return { stage:'pr', pct: allSent ? 70 : 55 };
-    }
-    if (d.visits.length) {
-      const ls = d.leadStatus.toLowerCase();
-      if (['closed won','accepted','qualified','pr received','pr processed'].some(x=>ls.includes(x)))
-        return { stage:'lead', pct:45 };
-      if (['proposal','negotiation'].some(x=>ls.includes(x)))
-        return { stage:'lead', pct:35 };
-      return { stage:'lead', pct:25 };
-    }
-    return { stage:'travel', pct: 10 };
-  }
-
-  // ── 3. Filter ──
-  let deals = Object.values(dealMap);
-  if (q)   deals = deals.filter(d => JSON.stringify(d).toLowerCase().includes(q));
-  if (gq)  deals = deals.filter(d => JSON.stringify(d).toLowerCase().includes(gq));
-  if (stf) deals = deals.filter(d => dealProgress(d).stage === stf);
-
-  // Sort: farthest stage first
-  const stageOrder = {po:4, pr:3, lead:2, travel:1};
-  deals.sort((a,b) => {
-    const pa = dealProgress(a), pb = dealProgress(b);
-    return (stageOrder[pb.stage]||0) - (stageOrder[pa.stage]||0) || pb.pct - pa.pct;
-  });
-
-  // ── 4. KPIs ──
-  const allDeals = Object.values(dealMap);
-  const kpis = { total:allDeals.length, inprog:0, atpr:0, atpo:0 };
-  allDeals.forEach(d => {
-    const s = dealProgress(d).stage;
-    if (s==='po')            kpis.atpo++;
-    else if (s==='pr')       kpis.atpr++;
-    else if (s==='lead'||s==='travel') kpis.inprog++;
-  });
-  set('sp-total',  kpis.total);
-  set('sp-inprog', kpis.inprog);
-  set('sp-atpr',   kpis.atpr);
-  set('sp-atpo',   kpis.atpo);
-
-  if (!deals.length) {
-    set('sp-cards-list', `<div class="sp-empty">${allDeals.length ? 'No deals match your search' : 'No data loaded yet'}</div>`);
-    return;
-  }
-
-  // ── 5. Render cards ──
-  const PHASE_ICONS = {
-    travel: `<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
-    lead:   `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    pr:     `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
-    po:     `<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
-  };
-
-  const PHASES = ['travel','lead','pr','po'];
-  const PHASE_LABELS = { travel:'Travel', lead:'Lead', pr:'Purchase Request', po:'Purchase Order' };
-
-  set('sp-cards-list', deals.map(d => {
-    const { stage: fStage, pct } = dealProgress(d);
-    const fIdx = PHASES.indexOf(fStage);
-    const pctColor = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--blue)' : pct >= 25 ? 'var(--amber)' : 'var(--accent)';
-    const lsColor  = (d.leadStatus && _data.statusColorMap) ? (_data.statusColorMap[d.leadStatus]||'var(--text3)') : 'var(--text3)';
-
-    const phases = PHASES.map((ph, pi) => {
-      const isDone   = pi < fIdx;
-      const isActive = pi === fIdx;
-      const cls = isDone ? 'sp-done' : isActive ? 'sp-active' : '';
-      const lineL = (isDone||isActive) ? 'background:var(--green)' : '';
-      const lineR = isDone             ? 'background:var(--green)' : '';
-
-      // Sub-step badges inside each phase
-      let subSteps = '';
-      if (ph === 'travel') {
-        const v = d.visits[0];
-        if (v) {
-          const dateBadge = v['Schedule Date'] ? fmtDate(v['Schedule Date']) : '';
-          const badge = dateBadge || v['Meeting Person and Designation'] || '';
-          subSteps = badge ? `<div class="sp-sub-step ${isDone?'ss-done':isActive?'ss-active':''}">${trunc(badge,22)}</div>` : '';
-        }
-      } else if (ph === 'lead') {
-        if (d.leadStatus) {
-          subSteps = `<div class="sp-sub-step ${isDone?'ss-done':isActive?'ss-active':''}" style="${isDone||isActive?'':'color:'+lsColor}">${trunc(d.leadStatus,20)}</div>`;
-        }
-      } else if (ph === 'pr') {
-        subSteps = d.prs.slice(0,2).map(pr => {
-          const qStat = pr['Quotation Status']||(pr['Remark 3']?'Submitted':'Pending');
-          const sent  = String(qStat).toLowerCase().includes('submit');
-          return `<div class="sp-sub-step ${isDone?'ss-done':sent?'ss-active':'ss-partial'}">${trunc(pr['Internal PR No']||'PR',14)} · ${sent?'Sent':'Pending'}</div>`;
-        }).join('');
-        if (d.prs.length > 2) subSteps += `<div class="sp-sub-step" style="color:var(--text3)">+${d.prs.length-2} more</div>`;
-      } else if (ph === 'po') {
-        subSteps = d.pos.slice(0,2).map(po => {
-          const s = String(po['Production Stage']||'').trim();
-          const p = poStagePct(s);
-          const sc = p===100?'ss-done':p>=50?'ss-active':'ss-partial';
-          return `<div class="sp-sub-step ${isDone?'ss-done':sc}">${trunc(s||'In Progress',18)}</div>`;
-        }).join('');
-        if (d.pos.length > 2) subSteps += `<div class="sp-sub-step" style="color:var(--text3)">+${d.pos.length-2} more</div>`;
-      }
-
-      return `<div class="sp-phase ${cls}">
-        <div class="sp-phase-track">
-          <div class="sp-phase-line-l" style="${lineL}"></div>
-          <div class="sp-phase-node">${PHASE_ICONS[ph]}</div>
-          <div class="sp-phase-line-r" style="${lineR}"></div>
-        </div>
-        <div class="sp-phase-detail">
-          <div class="sp-phase-title">${PHASE_LABELS[ph]}</div>
-          <div class="sp-sub-steps">${subSteps}</div>
-        </div>
-      </div>`;
-    }).join('');
-
-    return `<div class="sp-card">
-      <div class="sp-card-top">
-        <div class="sp-card-left">
-          <span class="sp-lead-id">${d.leadNo}</span>
-          <span class="sp-customer">${d.customer}</span>
-          <div class="sp-meta">
-            ${d.visits.length  ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--blue)"></span>${d.visits.length} visit${d.visits.length>1?'s':''}</span>` : ''}
-            ${d.prs.length     ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--amber)"></span>${d.prs.length} PR${d.prs.length>1?'s':''}</span>` : ''}
-            ${d.pos.length     ? `<span class="sp-meta-item"><span class="sp-meta-dot" style="background:var(--green)"></span>${d.pos.length} PO${d.pos.length>1?'s':''}</span>` : ''}
-            ${d.leadDate       ? `<span class="sp-meta-item" style="color:var(--text3)">${fmtDate(d.leadDate)}</span>` : ''}
-          </div>
-        </div>
-        <div class="sp-progress-wrap">
-          <span class="sp-progress-label">Progress</span>
-          <span class="sp-progress-pct" style="color:${pctColor}">${pct}%</span>
-        </div>
-      </div>
-      <div class="sp-stepper">${phases}</div>
-    </div>`;
-  }).join(''));
-}
-// ═══════════════════════════════════════════════
-//  END SALES PIPELINE TRACKER
-// ═══════════════════════════════════════════════
-
-
-// Run immediately - no waiting
-(function() {
-  var dbg = document.createElement('div');
-  dbg.id = 'dbg';
-  dbg.style = 'position:fixed;bottom:10px;left:10px;right:10px;background:#1a0000;color:#ff8888;font-size:11px;font-family:monospace;padding:8px;border-radius:6px;z-index:9999;max-height:200px;overflow:auto;display:none';
-  document.body.appendChild(dbg);
-  function dbgLog(msg) { dbg.style.display='block'; dbg.innerHTML += msg + '<br>'; }
-
-  window.onerror = function(msg,src,line,col,err) {
-    dbgLog('ERROR: ' + msg + ' (line ' + line + ')');
-  };
-
-  try {
-    dbgLog('Starting loadAll...');
-    loadAll();
-    dbgLog('loadAll completed');
-  } catch(e) {
-    dbgLog('CRASH: ' + e.message + ' at ' + e.stack);
-    var ls = document.getElementById('loading-screen');
-    if(ls) ls.style.display='none';
-    var es = document.getElementById('error-screen');
-    var em = document.getElementById('error-msg');
-    if(em) em.textContent = e.message;
-    if(es) { es.style.display='flex'; }
-  }
-})();
-
+loadAll();
 </script>
 </body>
 </html>
