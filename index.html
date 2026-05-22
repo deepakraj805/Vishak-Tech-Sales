@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vishak Tech — Sales Pipeline Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -110,6 +113,16 @@
   .brand-name { font-size: 16px; font-weight: 800; letter-spacing: -0.4px; color: #ffffff; }
   .brand-sub { font-size: 11px; color: var(--text2); margin-top: 1px; font-weight: 600; letter-spacing: 0.3px; }
   .topbar-right { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; }
+  .topbar-center {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; color: var(--text2); font-family: 'DM Mono', monospace; font-weight: 500;
+    flex: 1; justify-content: center;
+  }
+  .hbtn-live { pointer-events: none; }
+  .hbtn-action { color: var(--text); border-color: var(--border-strong); }
+  .hbtn-action:hover { background: var(--surface3); border-color: var(--accent); color: var(--accent2); }
+  .hbtn-drive { color: var(--green); border-color: rgba(34,217,138,0.30); }
+  .hbtn-drive:hover { background: rgba(34,217,138,0.10); border-color: var(--green); color: var(--green); }
   .hbtn {
     display: flex; align-items: center; gap: 6px;
     background: var(--surface2);
@@ -596,14 +609,24 @@
         <div class="brand-sub">Sales Pipeline Dashboard</div>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;" id="file-info">—</div>
+    <div class="topbar-center" id="file-info">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:var(--green);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span id="file-info-text">Google Sheets · not connected</span>
+    </div>
     <div class="topbar-right">
-      <div class="hbtn"><div class="live-dot"></div>&nbsp;Live</div>
-      <label for="xlsx-upload-top" class="hbtn" style="cursor:pointer;">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Load File
-      </label>
-      <input type="file" id="xlsx-upload-top" accept=".xlsx,.xls" style="display:none" onchange="handleFileUpload(this)">
+      <div class="hbtn hbtn-live"><div class="live-dot"></div>&nbsp;Live</div>
+      <button class="hbtn hbtn-action" id="refresh-btn" onclick="refreshFromDrive()" style="cursor:pointer;">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Refresh
+      </button>
+      <button class="hbtn hbtn-action" id="open-sheet-btn" onclick="openSheet()" style="cursor:pointer;display:none;">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open Sheet
+      </button>
+      <button class="hbtn hbtn-drive" id="drive-btn" onclick="openDrivePicker()" style="cursor:pointer;">
+        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Connect Drive
+      </button>
     </div>
   </div>
 
@@ -786,6 +809,8 @@ const TABS = { travel:'Travel', lead:'LEAD', pr:'PR', po:'PO' };
 
 let _data = { aLeads:[], aPRs:[], aPOs:[], aVisits:[] };
 let _sort = { pr:{col:null,dir:1}, po:{col:null,dir:1} };
+let _currentDriveFileId = null;
+let _currentDriveFileName = null;
 
 function showUpload() {
   hide('loading-screen'); hide('error-screen'); hide('dashboard');
@@ -933,9 +958,21 @@ function renderDashboard({travels, leads, prs, pos, fileName}) {
   renderPipeline();
   renderVisits(); renderPRs(); renderPOs(); renderSalesPipeline();
 
-  const now=new Date().toLocaleString();
-  set('file-info', (fileName||'Excel file') + ' · loaded ' + now);
-  set('footer-ts','Excel data · Last loaded: ' + now);
+  const now=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var isFromDrive = !!_currentDriveFileId;
+  var srcLabel = isFromDrive ? 'Google Sheets' : 'Excel file';
+  set('file-info-text', srcLabel + ' · refreshed ' + now);
+  set('footer-ts', srcLabel + ' · Last loaded: ' + now);
+  // Show/hide Drive vs Open Sheet button
+  var driveBtn = document.getElementById('drive-btn');
+  var openBtn  = document.getElementById('open-sheet-btn');
+  if (isFromDrive) {
+    if (driveBtn) driveBtn.style.display = 'none';
+    if (openBtn)  openBtn.style.display  = '';
+  } else {
+    if (driveBtn) driveBtn.style.display = '';
+    if (openBtn)  openBtn.style.display  = 'none';
+  }
 
   var ls2 = document.getElementById('loading-screen');
   if (ls2) ls2.style.display = 'none';
@@ -1336,6 +1373,164 @@ function renderSalesPipeline() {
 //  END SALES PIPELINE TRACKER
 // ═══════════════════════════════════════════════
 
+
+// ═══════════════════════════════════════════════
+//  GOOGLE DRIVE PICKER
+// ═══════════════════════════════════════════════
+
+// ── CONFIGURATION ──
+// Replace these with your own credentials from Google Cloud Console:
+//   1. Go to console.cloud.google.com → APIs & Services → Credentials
+//   2. Create an OAuth 2.0 Client ID (Web application) → CLIENT_ID
+//   3. Create an API Key → API_KEY
+//   4. Enable "Google Picker API" and "Google Drive API" in your project
+const DRIVE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+const DRIVE_API_KEY   = 'YOUR_GOOGLE_API_KEY';
+const DRIVE_SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
+
+let _pickerAccessToken = null;
+let _gapiReady = false;
+let _gisReady  = false;
+
+// Load gapi picker library
+gapi.load('picker', () => { _gapiReady = true; });
+
+// Init Google Identity Services token client
+let _tokenClient;
+function _initGIS() {
+  _tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: DRIVE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: (resp) => {
+      if (resp.error) {
+        console.error('GIS error:', resp);
+        _showDriveError('Google sign-in failed: ' + resp.error);
+        return;
+      }
+      _pickerAccessToken = resp.access_token;
+      _buildPicker();
+    }
+  });
+  _gisReady = true;
+}
+
+// Wait for gsi/client script to load
+if (window.google && window.google.accounts) {
+  _initGIS();
+} else {
+  window.addEventListener('load', () => {
+    if (window.google && window.google.accounts) _initGIS();
+  });
+}
+
+function openDrivePicker() {
+  if (DRIVE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
+    _showDriveError(
+      '⚙️ Setup required: Open the HTML file, find the DRIVE_CLIENT_ID and DRIVE_API_KEY ' +
+      'constants near the top of the &lt;script&gt; block, and replace them with your ' +
+      'Google Cloud credentials. See comments for instructions.'
+    );
+    return;
+  }
+  if (!_gisReady) {
+    _showDriveError('Google Identity Services not loaded yet. Please wait a moment and try again.');
+    return;
+  }
+  if (_pickerAccessToken) {
+    _buildPicker();
+  } else {
+    _tokenClient.requestAccessToken({ prompt: 'consent' });
+  }
+}
+
+function _buildPicker() {
+  if (!_gapiReady) {
+    _showDriveError('Google Picker API not loaded yet. Please try again.');
+    return;
+  }
+  const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+    .setMimeTypes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel')
+    .setIncludeFolders(true);
+
+  const picker = new google.picker.PickerBuilder()
+    .addView(view)
+    .setOAuthToken(_pickerAccessToken)
+    .setDeveloperKey(DRIVE_API_KEY)
+    .setTitle('Select your Sales Pipeline Excel file')
+    .setCallback(_pickerCallback)
+    .build();
+
+  picker.setVisible(true);
+}
+
+function _pickerCallback(data) {
+  if (data.action === google.picker.Action.PICKED) {
+    const doc = data.docs[0];
+    const fileId = doc.id;
+    const fileName = doc.name;
+    _loadDriveFile(fileId, fileName);
+  }
+}
+
+function _loadDriveFile(fileId, fileName) {
+  _currentDriveFileId   = fileId;
+  _currentDriveFileName = fileName;
+  show('loading-screen', 'Loading ' + fileName + ' from Drive…');
+  hide('error-screen');
+
+  const url = 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media';
+  fetch(url, {
+    headers: { Authorization: 'Bearer ' + _pickerAccessToken }
+  })
+  .then(r => {
+    if (!r.ok) throw new Error('Drive download failed: ' + r.status + ' ' + r.statusText);
+    return r.arrayBuffer();
+  })
+  .then(buf => {
+    const data = new Uint8Array(buf);
+    const wb = XLSX.read(data, { type: 'array', cellDates: false });
+    const missing = Object.values(TABS).filter(t => !wb.SheetNames.includes(t));
+    if (missing.length) {
+      throw new Error('Missing sheets: ' + missing.join(', ') + '. Found: ' + wb.SheetNames.join(', '));
+    }
+    const travels = xlsxSheetToRows(wb, TABS.travel);
+    const leads   = xlsxSheetToRows(wb, TABS.lead);
+    const prs     = xlsxSheetToRows(wb, TABS.pr);
+    const pos     = xlsxSheetToRows(wb, TABS.po);
+    renderDashboard({ travels, leads, prs, pos, fileName });
+  })
+  .catch(err => {
+    console.error(err);
+    hide('loading-screen');
+    document.getElementById('error-msg').textContent = err.message;
+    document.getElementById('error-screen').classList.add('show');
+  });
+}
+
+function refreshFromDrive() {
+  if (_currentDriveFileId && _pickerAccessToken) {
+    _loadDriveFile(_currentDriveFileId, _currentDriveFileName || 'file');
+  } else if (_pickerAccessToken) {
+    _buildPicker();
+  } else {
+    openDrivePicker();
+  }
+}
+
+function openSheet() {
+  if (_currentDriveFileId) {
+    window.open('https://drive.google.com/file/d/' + _currentDriveFileId + '/view', '_blank');
+  }
+}
+
+function _showDriveError(msg) {
+  hide('loading-screen');
+  document.getElementById('error-msg').innerHTML = msg;
+  document.getElementById('error-screen').classList.add('show');
+}
+// ═══════════════════════════════════════════════
+//  END GOOGLE DRIVE PICKER
+// ═══════════════════════════════════════════════
 
 // Run immediately - no waiting
 (function() {
