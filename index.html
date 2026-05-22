@@ -309,6 +309,89 @@
 
   @media(max-width:700px){ .kpi-grid{grid-template-columns:1fr 1fr} .row2{grid-template-columns:1fr} }
   @media(max-width:420px){ .kpi-grid{grid-template-columns:1fr} }
+
+  /* ── SALES TRACKER ── */
+  .sales-tracker { margin-top:20px; }
+  .sales-tracker-title {
+    font-size:13px; font-weight:700; color:var(--text2);
+    text-transform:uppercase; letter-spacing:0.7px;
+    display:flex; align-items:center; gap:8px;
+    padding:1.1rem 1.4rem 0.8rem;
+    border-bottom:1px solid var(--border);
+    margin-bottom:0;
+  }
+  .sales-tracker-title svg { width:15px; height:15px; stroke:var(--accent); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .tracker-search-bar {
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    padding:0.7rem 1.4rem; border-bottom:1px solid var(--border);
+  }
+  .tracker-search-input {
+    flex:1; min-width:180px; background:var(--surface2); border:1px solid var(--border-strong);
+    color:var(--text); border-radius:8px; padding:0.38rem 0.75rem 0.38rem 2.1rem;
+    font-size:12px; font-family:inherit; outline:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c7391' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:9px center; transition:border-color 0.18s;
+  }
+  .tracker-search-input:focus { border-color:var(--border-accent); box-shadow:0 0 0 3px rgba(224,112,64,0.12); }
+  .tracker-search-input::placeholder { color:var(--text3); }
+  .tracker-filter-select {
+    background:var(--surface2); border:1px solid var(--border-strong); color:var(--text2);
+    border-radius:8px; padding:0.38rem 0.7rem; font-size:12px; font-family:inherit;
+    outline:none; cursor:pointer; transition:border-color 0.18s;
+  }
+  .tracker-filter-select option { background:var(--surface2); }
+  .tracker-count { font-size:11px; color:var(--accent); font-family:'DM Mono',monospace; margin-left:auto; font-weight:600; }
+
+  .tracker-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .tracker-table th {
+    text-align:left; font-size:10px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.6px; color:var(--text3); padding:0 8px 10px 0;
+    border-bottom:1px solid var(--border-strong); cursor:pointer; user-select:none; white-space:nowrap;
+    transition:color 0.15s;
+  }
+  .tracker-table th:hover { color:var(--text2); }
+  .tracker-table th.sorted { color:var(--accent); }
+  .tracker-table th .sort-icon { opacity:0.35; margin-left:3px; }
+  .tracker-table th.sorted .sort-icon { opacity:1; }
+  .tracker-table td {
+    padding:9px 8px 9px 0; border-bottom:1px solid var(--border);
+    color:var(--text2); vertical-align:top; font-weight:450;
+  }
+  .tracker-table tbody tr:hover td { background:var(--surface2); }
+  .tracker-table tr:last-child td { border-bottom:none; }
+  .tracker-table td.t-lead { color:var(--text); font-weight:600; font-size:12px; }
+  .tracker-table td.t-mono { font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); font-weight:600; }
+  .tracker-table td.t-scope { font-size:11.5px; color:var(--text2); line-height:1.5; max-width:220px; }
+  .tracker-table td.t-remark { font-size:11px; color:var(--text3); line-height:1.5; max-width:200px; }
+  .tracker-table-wrap { overflow-x:auto; padding:0 1.4rem 1.2rem; }
+
+  .stage-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:20px;
+    letter-spacing:0.3px; white-space:nowrap;
+  }
+  .stage-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .stage-travel { background:rgba(65,168,200,0.15); color:#70c8f0; }
+  .stage-travel .stage-dot { background:#41a8c8; }
+  .stage-lead   { background:rgba(245,158,11,0.15); color:#fde68a; }
+  .stage-lead   .stage-dot { background:#f59e0b; }
+  .stage-pr     { background:rgba(144,96,208,0.15); color:#c4b5fd; }
+  .stage-pr     .stage-dot { background:#9060d0; }
+  .stage-po     { background:rgba(61,186,128,0.15); color:#6ee7b7; }
+  .stage-po     .stage-dot { background:#3dba80; }
+  .stage-unknown{ background:var(--surface3); color:var(--text3); }
+  .stage-unknown .stage-dot { background:var(--text3); }
+
+  .followup-chip {
+    display:inline-block; font-size:10px; font-weight:600;
+    padding:2px 6px; border-radius:5px; margin:1px 2px 0 0;
+    background:rgba(255,255,255,0.05); border:1px solid var(--border-strong);
+    color:var(--text3); line-height:1.5;
+  }
+  .po-status-chip {
+    display:inline-flex; align-items:center; font-size:10.5px; font-weight:600;
+    padding:2px 8px; border-radius:20px; white-space:nowrap;
+  }
 </style>
 </head>
 <body>
@@ -399,21 +482,21 @@
     <span class="filter-label">🔍 Filters</span>
     <input class="filter-input" type="text" id="global-search" placeholder="Search all sections…" oninput="applyAllFilters()">
     <select class="filter-select" id="filter-lead-status" onchange="applyAllFilters()">
-      <option value="">All Lead Status</option>
+      <option value="">All Lead Statuses</option>
     </select>
     <select class="filter-select" id="filter-pr-status" onchange="applyAllFilters()">
-      <option value="">All PR Status</option>
+      <option value="">All PR Statuses</option>
       <option value="submitted">Submitted</option>
       <option value="not submitted">Not Submitted</option>
     </select>
     <select class="filter-select" id="filter-po-stage" onchange="applyAllFilters()">
-      <option value="">All PO Stage</option>
+      <option value="">All PO Stages</option>
       <option value="PROCESSING">Processing</option>
       <option value="COMPLETED">Completed</option>
       <option value="25% COMPLETED">25% Completed</option>
       <option value="50% COMPLETED">50% Completed</option>
-      <option value="75% OVER">75% Completed</option>
-      <option value="YTS">Yet to Start</option>
+      <option value="75% OVER">75% Over</option>
+      <option value="YTS">Yet to Start (YTS)</option>
     </select>
     <button class="clear-btn" onclick="clearAllFilters()">✕ Clear</button>
     <span class="filter-count" id="filter-summary"></span>
@@ -450,7 +533,7 @@
     <div class="card-search">
       <input class="card-search-input" type="text" id="pr-search" placeholder="Search PR No, description, customer…" oninput="renderPRs()">
       <select class="card-search-select" id="pr-status-filter" onchange="renderPRs()">
-        <option value="">All Status</option>
+        <option value="">All statuses</option>
         <option value="submitted">Submitted</option>
         <option value="not submitted">Not Submitted</option>
       </select>
@@ -476,13 +559,13 @@
     <div class="card-search">
       <input class="card-search-input" type="text" id="po-search" placeholder="Search customer, PR ref, description…" oninput="renderPOs()">
       <select class="card-search-select" id="po-stage-filter" onchange="renderPOs()">
-        <option value="">All Stage</option>
+        <option value="">All stages</option>
         <option value="PROCESSING">Processing</option>
         <option value="COMPLETED">Completed</option>
         <option value="25% COMPLETED">25% Completed</option>
         <option value="50% COMPLETED">50% Completed</option>
-        <option value="75% OVER">75% Completed</option>
-        <option value="YTS">Yet to Start</option>
+        <option value="75% OVER">75% Over</option>
+        <option value="YTS">Yet to Start (YTS)</option>
       </select>
     </div>
     <table class="data-table">
@@ -496,6 +579,48 @@
       <tbody id="po-tbody"></tbody>
     </table>
     <span class="row-count" id="po-count"></span>
+  </div>
+
+  <!-- SALES TRACKER: Travel → Lead → PR → PO -->
+  <div class="card section-gap sales-tracker" id="sales-tracker-card">
+    <div class="sales-tracker-title">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Sales Tracker — Travel · Lead · PR · PO Pipeline
+    </div>
+    <div class="tracker-search-bar">
+      <input class="tracker-search-input" type="text" id="tracker-search"
+        placeholder="Search customer, lead no, PR, scope…" oninput="renderTracker()">
+      <select class="tracker-filter-select" id="tracker-stage-filter" onchange="renderTracker()">
+        <option value="">All Stages</option>
+        <option value="travel">Travel</option>
+        <option value="lead">Lead</option>
+        <option value="pr">PR</option>
+        <option value="po">PO</option>
+      </select>
+      <select class="tracker-filter-select" id="tracker-po-stage-filter" onchange="renderTracker()">
+        <option value="">All PO Stages</option>
+        <option value="PROCESSING">Processing</option>
+        <option value="COMPLETED">Completed</option>
+        <option value="YTS">Yet to Start</option>
+      </select>
+      <span class="tracker-count" id="tracker-count"></span>
+    </div>
+    <div class="tracker-table-wrap">
+      <table class="tracker-table">
+        <thead><tr>
+          <th onclick="sortTracker('lead_no',this)">Lead No <span class="sort-icon">↕</span></th>
+          <th onclick="sortTracker('customer',this)">Customer / Location <span class="sort-icon">↕</span></th>
+          <th onclick="sortTracker('stage',this)">Stage <span class="sort-icon">↕</span></th>
+          <th onclick="sortTracker('internal_pr',this)">Internal PR <span class="sort-icon">↕</span></th>
+          <th>Scope / Description</th>
+          <th onclick="sortTracker('po_no',this)">PO No <span class="sort-icon">↕</span></th>
+          <th onclick="sortTracker('po_stage',this)">PO Stage <span class="sort-icon">↕</span></th>
+          <th>Latest Follow-up</th>
+        </tr></thead>
+        <tbody id="tracker-tbody"></tbody>
+      </table>
+    </div>
+    <span class="row-count" id="tracker-row-count" style="padding:0 1.4rem 0.5rem;display:block;"></span>
   </div>
 
   <div class="footer" id="footer-ts">—</div>
@@ -587,7 +712,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   // Populate lead status dropdown + build stable per-status color map (assigned once, never shifts on filter)
   const statuses=[...new Set(_data.aLeads.map(r=>String(r['Lead Status']||'Unknown').trim()))].sort();
   const sel=document.getElementById('filter-lead-status');
-  sel.innerHTML='<option value="">All Lead Status</option>'+statuses.map(s=>`<option value="${s}">${s}</option>`).join('');
+  sel.innerHTML='<option value="">All Lead Statuses</option>'+statuses.map(s=>`<option value="${s}">${s}</option>`).join('');
   // Professional semantic palette — status name drives color, not position
   // Known statuses get hand-picked colors; unknowns get distinct palette slots
   const _SEMANTIC={
@@ -614,7 +739,7 @@ function renderDashboard({travels,leads,prs,pos}) {
   });
 
   renderPipeline();
-  renderVisits(); renderPRs(); renderPOs();
+  renderVisits(); renderPRs(); renderPOs(); renderTracker();
 
   const now=new Date().toLocaleString();
   set('file-info',`Google Sheets · refreshed ${now}`);
@@ -731,7 +856,7 @@ function renderPOs() {
     <td class="name">${trunc(r['Customer Name']||'—',28)}</td>
     <td class="mono">${r['Internal PR']||'—'}</td>
     <td>${trunc(r['Short Description']||'—',35)}</td>
-    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']==='75% OVER'?'75% Completed':r['Production Stage']||'—'}</span></td>
+    <td><span class="pill ${pillPO(r['Production Stage'])}">${r['Production Stage']==='YTS'?'Yet to Start':r['Production Stage']||'—'}</span></td>
   </tr>`).join('')||'<tr><td colspan="5" class="empty">No PO data matches</td></tr>');
   const el=document.getElementById('po-count');
   if(el) el.textContent=rows.length!==_data.aPOs.length?`Showing ${rows.length} of ${_data.aPOs.length} records`:'';
@@ -776,6 +901,188 @@ function sortTable(table,col,th) {
 function set(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
 function show(id,msg){const el=document.getElementById(id);if(el){el.classList.remove('hidden');el.style.display='';if(msg){const m=document.getElementById('load-msg');if(m)m.textContent=msg;}}}
 function hide(id){const el=document.getElementById(id);if(el){el.classList.add('hidden');el.style.display='none';}}
+
+// ══════════════════════════════════════════════════════
+//  SALES TRACKER  (Travel → Lead → PR → PO)
+// ══════════════════════════════════════════════════════
+let _trackerSort = { col: null, dir: 1 };
+
+function buildTrackerRows() {
+  // Build a unified row per Lead No, joining Travel, Lead, PR, PO
+  const leadMap = {};
+  _data.aLeads.forEach(l => {
+    const k = String(l['Lead No'] || '').trim();
+    if (!k) return;
+    leadMap[k] = l;
+  });
+
+  const prMap = {};
+  _data.aPRs.forEach(r => {
+    // PR sheet links via Internal PR No; also try matching Lead via customer
+    const prNo = String(r['Internal PR No'] || '').trim();
+    if (prNo) prMap[prNo] = r;
+  });
+
+  const poMap = {};
+  _data.aPOs.forEach(r => {
+    const prRef = String(r['Internal PR'] || '').trim();
+    if (prRef) poMap[prRef] = r;
+  });
+
+  // Build visit map (latest visit per Lead No)
+  const visitMap = {};
+  _data.aVisits.forEach(v => {
+    const k = String(v['Lead No'] || '').trim();
+    if (!k) return;
+    if (!visitMap[k] || v['Schedule Date'] > visitMap[k]['Schedule Date']) {
+      visitMap[k] = v;
+    }
+  });
+
+  const rows = [];
+
+  // Primary: iterate leads
+  Object.keys(leadMap).forEach(leadNo => {
+    const lead = leadMap[leadNo];
+    const visit = visitMap[leadNo];
+    const internalPr = String(lead['Internal PR No'] || '').trim();
+    const pr = internalPr ? prMap[internalPr] : null;
+    const po = internalPr ? poMap[internalPr] : null;
+
+    // Determine highest stage reached
+    let stage = 'lead';
+    if (po) stage = 'po';
+    else if (pr) stage = 'pr';
+    else if (visit) stage = 'travel';
+
+    // Latest follow-up remark from lead
+    let latestFollowup = '';
+    for (let i = 5; i >= 1; i--) {
+      const rem = lead[`Followup Remark ${i}`];
+      const dt = lead[`Followup Date ${i}`];
+      if (rem) { latestFollowup = (dt ? fmtDate(dt) + ': ' : '') + rem; break; }
+    }
+
+    // Scope — prefer PR description, fallback to lead scope
+    const scope = (pr && pr['PR Description']) || lead['Scope in Lead'] || (visit && visit['VISIT Discription']) || '';
+
+    rows.push({
+      lead_no: leadNo,
+      customer: lead['Plant Name and Location'] || lead['Customer Name'] || '',
+      stage,
+      internal_pr: internalPr,
+      scope,
+      po_no: po ? (po['PO Number'] || '') : '',
+      po_stage: po ? (po['Production Stage'] || '') : '',
+      latest_followup: latestFollowup,
+      // raw refs for rendering
+      _lead: lead, _visit: visit, _pr: pr, _po: po
+    });
+  });
+
+  // Add travel-only rows (visits without a lead entry)
+  _data.aVisits.forEach(v => {
+    const k = String(v['Lead No'] || '').trim();
+    if (!k || leadMap[k]) return; // already covered
+    rows.push({
+      lead_no: k,
+      customer: v['Plant Name Location'] || '',
+      stage: 'travel',
+      internal_pr: '',
+      scope: v['VISIT Discription'] || '',
+      po_no: '',
+      po_stage: '',
+      latest_followup: '',
+      _lead: null, _visit: v, _pr: null, _po: null
+    });
+  });
+
+  return rows;
+}
+
+function stageBadge(stage) {
+  const map = {
+    travel: ['stage-travel', '✈ Travel'],
+    lead:   ['stage-lead',   '🔗 Lead'],
+    pr:     ['stage-pr',     '📄 PR'],
+    po:     ['stage-po',     '📦 PO'],
+  };
+  const [cls, label] = map[stage] || ['stage-unknown', stage];
+  return `<span class="stage-badge ${cls}"><span class="stage-dot"></span>${label}</span>`;
+}
+
+function poStageBadge(s) {
+  if (!s) return '—';
+  const cls = pillPO(s);
+  const label = s === 'YTS' ? 'Yet to Start' : s;
+  return `<span class="pill ${cls}">${label}</span>`;
+}
+
+function renderTracker() {
+  const q  = (document.getElementById('tracker-search') || {}).value || '';
+  const sf = (document.getElementById('tracker-stage-filter') || {}).value || '';
+  const pf = (document.getElementById('tracker-po-stage-filter') || {}).value || '';
+
+  let rows = buildTrackerRows();
+
+  // Filter
+  rows = rows.filter(r => {
+    if (sf && r.stage !== sf) return false;
+    if (pf && r.po_stage !== pf) return false;
+    if (q) {
+      const qL = q.toLowerCase();
+      const hit = [r.lead_no, r.customer, r.internal_pr, r.scope, r.po_no, r.po_stage, r.latest_followup]
+        .some(v => v && String(v).toLowerCase().includes(qL));
+      if (!hit) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  const { col, dir } = _trackerSort;
+  if (col) {
+    rows = [...rows].sort((a, b) => String(a[col] || '').localeCompare(String(b[col] || '')) * dir);
+  }
+
+  const total = buildTrackerRows().length;
+  const el = document.getElementById('tracker-count');
+  if (el) el.textContent = rows.length !== total ? `${rows.length} of ${total}` : `${total} rows`;
+
+  const countEl = document.getElementById('tracker-row-count');
+  if (countEl) countEl.textContent = rows.length !== total ? `Showing ${rows.length} of ${total} entries` : '';
+
+  const html = rows.map(r => {
+    const scopeText = trunc(r.scope, 90);
+    const followText = trunc(r.latest_followup, 80);
+    const prCell = r.internal_pr
+      ? `<span class="t-mono">${r.internal_pr}</span>`
+      : '<span style="color:var(--text3);font-size:11px;">—</span>';
+    const poNoCell = r.po_no
+      ? `<span class="t-mono" style="color:var(--green)">${r.po_no}</span>`
+      : '<span style="color:var(--text3);font-size:11px;">—</span>';
+
+    return `<tr>
+      <td class="t-mono" style="white-space:nowrap">${r.lead_no}</td>
+      <td class="t-lead">${r.customer || '—'}</td>
+      <td style="white-space:nowrap">${stageBadge(r.stage)}</td>
+      <td>${prCell}</td>
+      <td class="t-scope">${scopeText || '—'}</td>
+      <td>${poNoCell}</td>
+      <td>${poStageBadge(r.po_stage)}</td>
+      <td class="t-remark">${followText || '—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" class="empty">No entries match</td></tr>';
+
+  set('tracker-tbody', html);
+}
+
+function sortTracker(col, th) {
+  if (_trackerSort.col === col) _trackerSort.dir *= -1;
+  else { _trackerSort.col = col; _trackerSort.dir = 1; }
+  document.querySelectorAll('.tracker-table th.sorted').forEach(t => t.classList.remove('sorted'));
+  if (th) th.classList.add('sorted');
+  renderTracker();
+}
 
 loadAll();
 </script>
