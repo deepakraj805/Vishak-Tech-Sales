@@ -707,7 +707,7 @@ const _dynMap={};let _dynIdx=0;
 function si(s){const k=String(s||'').toLowerCase().trim();if(STATUS_COLORS[k])return STATUS_COLORS[k];if(!_dynMap[k]){_dynMap[k]=_dynColors[_dynIdx%_dynColors.length];_dynIdx++;}const c=_dynMap[k];return{fill:c,bar:c,pill:'pill-default'};}
 function pillPR(s){const v=String(s||'').toLowerCase().trim();if(v==='submitted')return'pill-sent';if(v==='not submitted')return'pill-notsent';return'pill-default';}
 function pillPO(s){const v=String(s||'').toLowerCase().trim();if(v==='completed')return'pill-complete';if(v==='processing')return'pill-process';if(v.includes('25%'))return'pill-25';if(v.includes('50%'))return'pill-50';if(v.includes('75%'))return'pill-75';if(v==='yts')return'pill-yts';return'pill-default';}
-function fmtDate(v){if(!v)return'—';const d=new Date(v);return isNaN(d)?String(v):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function fmtDate(v){if(!v)return'—';const d=new Date(v);if(isNaN(d))return String(v);const dd=String(d.getDate()).padStart(2,'0');const mm=String(d.getMonth()+1).padStart(2,'0');const yyyy=d.getFullYear();return`${dd}/${mm}/${yyyy}`;}
 function trunc(s,n){const t=String(s||'');return t.length>n?t.slice(0,n)+'…':t;}
 function matches(r,q){if(!q)return true;q=q.toLowerCase();return Object.values(r).some(v=>v&&String(v).toLowerCase().includes(q));}
 
