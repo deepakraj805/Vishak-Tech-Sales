@@ -814,7 +814,7 @@ function renderVisits() {
     return `<div class="visit-item">
       <div class="visit-dot" style="background:${c}"></div>
       <div style="flex:1;min-width:0">
-        <div class="visit-name">${r['Plant Name Location']||'—'}</div>
+        <div class="visit-name">${r['Plant Name & Location']||'—'}</div>
         <div class="visit-meta">${[r['Meeting Person and Designation'],fmtDate(r['Schedule Date'])].filter(Boolean).join(' · ')}</div>
         ${r['VISIT Discription']?`<div class="visit-note">${trunc(r['VISIT Discription'],80)}</div>`:''}
       </div>
@@ -1009,7 +1009,7 @@ function renderPipelineTracker() {
   const cards = leads.slice(0, 40).map(lead => {
     const leadNo = lead['Lead No'] || '—';
     const status = lead['Lead Status'] || 'Unknown';
-    const customer = lead['Customer Name'] || lead['Plant Name Location'] || '—';
+    const customer = lead['Customer Name'] || lead['Plant Name & Location'] || '—';
 
     // Gather linked records
     const visits = _data.aVisits.filter(v => v['Lead No'] === leadNo);
