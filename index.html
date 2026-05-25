@@ -853,14 +853,14 @@ function renderPOs() {
   const gq=(document.getElementById('global-search')||{}).value||'';
   const psf=(document.getElementById('po-stage-filter')||{}).value||'';
   const gps=(document.getElementById('filter-po-stage')||{}).value||'';
-  const activeFilter=(psf||gps).trim();
+  const activeFilter=(gps||psf).trim();
 
   let rows=_data.aPOs.filter(r=>{
     if(!matches(r,q))return false;
     if(!matches(r,gq))return false;
     if(activeFilter){
       const stage=String(r['Production Stage']||'').trim();
-      if(stage!==activeFilter) return false;
+      if(stage.toLowerCase()!==activeFilter.toLowerCase()) return false;
     }
     return true;
   });
@@ -879,13 +879,13 @@ function renderPOs() {
 }
 
 function applyAllFilters() {
-  // Sync card filters to global (global takes precedence; card filter is a local override)
+  // Global filters always override card-level filters
   const gps=document.getElementById('filter-pr-status');
   const psf=document.getElementById('pr-status-filter');
-  if(gps&&psf&&gps.value&&!psf.value) psf.value=gps.value;
+  if(gps&&psf) psf.value=gps.value;
   const gpo=document.getElementById('filter-po-stage');
   const pof=document.getElementById('po-stage-filter');
-  if(gpo&&pof&&gpo.value&&!pof.value) pof.value=gpo.value;
+  if(gpo&&pof) pof.value=gpo.value;
 
   renderVisits(); renderPRs(); renderPOs(); try{renderPipelineTracker();}catch(e){console.error("PT error:",e);} renderPipeline();
   const active=[
